@@ -102,8 +102,10 @@
    <br />
 
 ## ER 図
-
 ---
+
+![erd](https://user-images.githubusercontent.com/76391902/226364239-a1447071-0d75-49a2-a93b-530d719d6f54.png)
+
 
 ## 画面遷移図
 
@@ -111,6 +113,3 @@
 
 [Figma](https://www.figma.com/file/yJIKilFlmQci2UixxIPald/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0%3A1&t=3c1PpH1fZswfUZJc-1 "画面遷移図")
 
-## ER 図
-
----
