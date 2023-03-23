@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const ImageDetail: React.FC = () => {
   return (
@@ -9,6 +10,7 @@ const ImageDetail: React.FC = () => {
       <nav>
         <Link href="/">TOPページ</Link>
       </nav>
+      <Footer />
     </div>
   );
 };
