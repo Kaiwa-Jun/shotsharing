@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@firebase/auth": "^0.21.5",
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.16",
     "@next/font": "13.2.4",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
@@ -17,6 +20,8 @@
     "daisyui": "^2.51.4",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "firebase": "^9.18.0",
+    "flowbite": "^1.6.4",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",

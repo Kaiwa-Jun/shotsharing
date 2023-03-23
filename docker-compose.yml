@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  backend:
+    build: ./backend
+    command: rails server -b 0.0.0.0
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./frontend:/frontend
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
