@@ -5,6 +5,7 @@ import AuthModal from "@/components/atoms/AuthModal";
 import Test from "@/components/Test";
 import Header from "@/components/Header";
 import Link from "next/link";
+import Footer from "@/components/Footer";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -35,6 +36,8 @@ const IndexPage: React.FC = () => {
         <Link href="/privacy-policy">プライバシーポリシーページ</Link>
         <Link href="/terms-of-service">利用規約ページ</Link>
       </nav>
+
+      <Footer />
     </div>
   );
 };
