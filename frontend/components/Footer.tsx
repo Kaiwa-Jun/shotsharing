@@ -1,11 +1,14 @@
-//ヘッダーコンポーネントを作成
 import React from "react";
 import Image from "next/image";
 
-const Footer: React.FC = () => {
+type FooterProps = {
+  className?: string;
+};
+
+const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <>
-      <footer className="bg-white dark:bg-gray-900 fixed bottom-0 inset-x-0 z-50">
+      <footer className={`some-footer-styles ${className}`}>
         <div className="mx-auto w-full container p-4 sm:p-6">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
