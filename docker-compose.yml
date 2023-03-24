@@ -15,9 +15,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3001:3001"
+      - "3001:3001" # または Next.js のデフォルトポートである 3000 を使用
     volumes:
-      - ./frontend:/frontend
+      - ./frontend:/app # この行を修正
   db:
     image: postgres:13
     environment:
