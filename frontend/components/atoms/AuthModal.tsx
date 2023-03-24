@@ -1,5 +1,6 @@
 import { signInWithGoogle } from "../../lib/login";
 import Link from "next/link";
+import Image from "next/image";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -44,8 +45,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           <span className="sr-only">Close modal</span>
         </button>
         <div className="flex flex-col items-center justify-center">
-          <a href="/" className="flex items-center">
-            <img
+          <Link href="/" className="flex items-center">
+            <Image
               src="https://flowbite.com/docs/images/logo.svg"
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
@@ -53,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">
               ShotSharing
             </span>
-          </a>
+          </Link>
           <div className="flex items-center justify-center my-10">
             <button
               onClick={handleGoogleSignIn}

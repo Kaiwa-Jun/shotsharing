@@ -9,7 +9,9 @@ const Test = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("http://localhost:3000/api/v1/hello");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/hello`
+      );
       const data = await response.json();
       setData(data);
     }

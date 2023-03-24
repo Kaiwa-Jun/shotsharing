@@ -9,6 +9,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Image from "next/image";
 import FileUploadModal from "./atoms/FileUploadModal";
+import Link from "next/link";
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
@@ -31,7 +32,7 @@ const Header: React.FC = () => {
     <header>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:text-white">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <a href="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Image
               src="https://flowbite.com/docs/images/logo.svg"
               className="mr-3 h-6 sm:h-9"
@@ -42,12 +43,13 @@ const Header: React.FC = () => {
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">
               ShotSharing
             </span>
-          </a>
+          </Link>
 
           <div className="flex items-center lg:order-2">
             {user ? (
               <>
-                <a
+                <Link
+                  href="#"
                   onClick={() => setShowUploadModal(true)}
                   className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
@@ -65,12 +67,12 @@ const Header: React.FC = () => {
                       d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                </a>
+                </Link>
                 {showUploadModal && (
                   <FileUploadModal onClose={() => setShowUploadModal(false)} />
                 )}
 
-                <a
+                <Link
                   href="/search"
                   className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
@@ -88,7 +90,7 @@ const Header: React.FC = () => {
                       d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                     />
                   </svg>
-                </a>
+                </Link>
 
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -140,7 +142,7 @@ const Header: React.FC = () => {
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="#"
                               className={classNames(
                                 active
@@ -150,14 +152,14 @@ const Header: React.FC = () => {
                               )}
                             >
                               プロフィール編集
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="#"
                               className={classNames(
                                 active
@@ -167,14 +169,14 @@ const Header: React.FC = () => {
                               )}
                             >
                               いいねした投稿
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="#"
                               className={classNames(
                                 active
@@ -184,14 +186,14 @@ const Header: React.FC = () => {
                               )}
                             >
                               コメントした投稿
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="#"
                               className={classNames(
                                 active
@@ -201,14 +203,15 @@ const Header: React.FC = () => {
                               )}
                             >
                               お気にいりした投稿
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
+                              href="#"
                               onClick={signOut}
                               className={classNames(
                                 active
@@ -218,7 +221,7 @@ const Header: React.FC = () => {
                               )}
                             >
                               ログアウト
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
@@ -228,7 +231,7 @@ const Header: React.FC = () => {
               </>
             ) : (
               <>
-                <a
+                <Link
                   href="/search"
                   className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
@@ -246,7 +249,7 @@ const Header: React.FC = () => {
                       d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                     />
                   </svg>
-                </a>
+                </Link>
                 <button
                   onClick={() => setShowModal(true)}
                   className="text-white dark:text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-100"
