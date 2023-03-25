@@ -2,28 +2,24 @@ version: "3.9"
 services:
   backend:
     build: ./backend
-    command: rails server -b 0.0.0.0
+    command: rails server -b 0.0.0.0 -p 3002
     volumes:
       - ./backend:/backend
       - ./backend/.env:/backend/.env
     ports:
-      - "3000:3000"
+      - "3002:3002"
     depends_on:
       - db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "3001:3001"
-  #   volumes:
-  #     - ./frontend:/app
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/backend_development
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=backend_development
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
 volumes:
