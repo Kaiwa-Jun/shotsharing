@@ -1,5 +1,5 @@
 import React from "react";
-import AuthModal from "@/components/atoms/AuthModal";
+import AuthModal from "@/components/organisms/AuthModal";
 import { signOut } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import "firebase/auth";
@@ -8,7 +8,7 @@ import { User } from "firebase/auth";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Image from "next/image";
-import FileUploadModal from "./atoms/FileUploadModal";
+import FileUploadModal from "./organisms/FileUploadModal";
 import Link from "next/link";
 
 function classNames(...classes: string[]): string {
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               height={50}
             />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">
-              ShotSharing
+              ShotSharingg????
             </span>
           </Link>
 

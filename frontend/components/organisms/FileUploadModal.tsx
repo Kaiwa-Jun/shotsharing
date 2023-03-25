@@ -1,12 +1,27 @@
-import { signInWithGoogle } from "../../lib/login";
-import Link from "next/link";
 import Image from "next/image";
+import React, { useState } from "react";
 
 type FileUploadModalProps = {
   onClose: () => void;
 };
 
 const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePostButtonClick = () => {
+    // ここで画像をバックエンドに送信する処理を実装
+  };
+
   return (
     <div
       className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 "
@@ -36,18 +51,28 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           <span className="sr-only">Close modal</span>
         </button>
         <div className="flex flex-col items-center justify-center">
-          <Image
-            className="h-auto max-w-full"
-            src="https://flowbite.com/docs/images/logo.svg"
-            alt="image description"
-            width={200}
-            height={100}
-          />
+          {selectedImage ? (
+            <Image
+              className="h-auto max-w-full"
+              src={selectedImage}
+              alt="Selected image"
+              style={{ width: "200px", height: "100px" }}
+            />
+          ) : (
+            <Image
+              className="h-auto max-w-full"
+              src="https://flowbite.com/docs/images/logo.svg"
+              alt="image description"
+              width={200}
+              height={100}
+            />
+          )}
 
           <input
             className="block w-[350px] mb-0 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
             id="small_size"
             type="file"
+            onChange={handleImageChange}
           />
 
           <p
@@ -69,6 +94,8 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
               撮影場所を共有する
             </span>
           </label>
+          <button onClick={handlePostButtonClick}>投稿</button>
+          <button onClick={onClose}>キャンセル</button>
         </div>
       </div>
     </div>

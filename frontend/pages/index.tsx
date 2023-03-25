@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { signInWithGoogle, signOut } from "../lib/auth";
-import AuthModal from "@/components/atoms/AuthModal";
+import AuthModal from "@/components/organisms/AuthModal";
 import Test from "@/components/Test";
 import Header from "@/components/Header";
 import Link from "next/link";
