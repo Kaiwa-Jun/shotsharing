@@ -13,12 +13,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-  frontend:
-    build: ./frontend
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./frontend:/app
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - ./frontend:/app
   db:
     image: postgres:13
     environment:

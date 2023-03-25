@@ -1,5 +1,5 @@
 import React from "react";
-import AuthModal from "@/components/atoms/AuthModal";
+import AuthModal from "@/components/organisms/AuthModal";
 import { signOut } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import "firebase/auth";
@@ -8,7 +8,7 @@ import { User } from "firebase/auth";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Image from "next/image";
-import FileUploadModal from "./atoms/FileUploadModal";
+import FileUploadModal from "./organisms/FileUploadModal";
 import Link from "next/link";
 
 function classNames(...classes: string[]): string {
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               height={50}
             />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">
-              ShotSharing
+              ShotSharingg????
             </span>
           </Link>
 
@@ -103,9 +103,9 @@ const Header: React.FC = () => {
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           ></path>
                         </svg>
                       </div>
