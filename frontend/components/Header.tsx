@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               height={50}
             />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">
-              ShotSharingg????
+              ShotSharingg
             </span>
           </Link>
 
