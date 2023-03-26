@@ -6,21 +6,53 @@ type FileUploadModalProps = {
 };
 
 const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
+
+  const dataURLtoBlob = (dataurl: string) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
       reader.readAsDataURL(file);
+      reader.onload = () => {
+        const blob = dataURLtoBlob(reader.result as string);
+        setSelectedImage(blob);
+      };
     }
   };
 
-  const handlePostButtonClick = () => {
-    // ここで画像をバックエンドに送信する処理を実装
+  const handlePostButtonClick = async () => {
+    if (selectedImage) {
+      try {
+        const formData = new FormData();
+        formData.append("image", selectedImage);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        // レスポンスを処理する
+      } catch (error) {
+        // エラーを処理する
+      }
+    }
   };
+
+  const file = selectedImage ? selectedImage : null;
 
   return (
     <div
@@ -54,9 +86,11 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           {selectedImage ? (
             <Image
               className="h-auto max-w-full"
-              src={selectedImage}
+              src={URL.createObjectURL(selectedImage)}
+              // src={selectedImage}
               alt="Selected image"
-              style={{ width: "200px", height: "100px" }}
+              width={200}
+              height={100}
             />
           ) : (
             <Image
@@ -83,19 +117,28 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           </p>
 
           <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              value=""
-              className="sr-only peer"
-              // checked={true}
-            />
+            <input type="checkbox" value="" className="sr-only peer" />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
               撮影場所を共有する
             </span>
           </label>
-          <button onClick={handlePostButtonClick}>投稿</button>
-          <button onClick={onClose}>キャンセル</button>
+          <div className="flex">
+            <button
+              onClick={onClose}
+              type="button"
+              className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={handlePostButtonClick}
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            >
+              投稿
+            </button>
+          </div>
         </div>
       </div>
     </div>
