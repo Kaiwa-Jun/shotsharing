@@ -1,5 +1,7 @@
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { User } from "firebase/auth";
 
 type FileUploadModalProps = {
   onClose: () => void;
@@ -7,6 +9,19 @@ type FileUploadModalProps = {
 
 const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    // Clean up the subscription when the component is unmounted
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const dataURLtoBlob = (dataurl: string) => {
     const arr = dataurl.split(",");
@@ -33,10 +48,14 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
   };
 
   const handlePostButtonClick = async () => {
-    if (selectedImage) {
+    if (selectedImage && user) {
+      console.log("user.uid:", user.uid); // user.uid を出力
+
       try {
         const formData = new FormData();
         formData.append("image", selectedImage);
+        formData.append("user_id", user.uid); // user_id を追加
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
           {
@@ -49,6 +68,8 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
       } catch (error) {
         // エラーを処理する
       }
+    } else {
+      alert("ログインしていないため、投稿できません。");
     }
   };
 

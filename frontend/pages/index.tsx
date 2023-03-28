@@ -41,9 +41,10 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-
-      <main className="flex-grow" style={{ minHeight: "150vh" }}>
+      <main
+        className="flex-grow"
+        style={{ minHeight: "150vh", backgroundColor: "white" }}
+      >
         <Test />
         <nav>
           <Link href="/">TOPページ</Link>
@@ -55,13 +56,6 @@ const IndexPage: React.FC = () => {
           <Link href="/terms-of-service">利用規約ページ</Link>
         </nav>
       </main>
-      <Footer
-        className={`${
-          showFooter
-            ? "bg-white dark:bg-gray-900 fixed bottom-0 inset-x-0 z-50"
-            : "hidden"
-        }`}
-      ></Footer>
     </div>
   );
 };

@@ -1,5 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,7 +12,24 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+  firebase
+    .firestore()
+    .enablePersistence()
+    .catch((err) => {
+      if (err.code === "failed-precondition") {
+        console.error(
+          "Firestore のオフラインデータ永続性は複数のタブで有効にできません。"
+        );
+      } else if (err.code === "unimplemented") {
+        console.error(
+          "現在のブラウザでは Firestore のオフラインデータ永続性がサポートされていません。"
+        );
+      }
+    });
+}
 
-export const auth = getAuth();
-export const googleProvider = new GoogleAuthProvider();
+export const auth = firebase.auth();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export default firebase;

@@ -1,4 +1,4 @@
-import { signInWithGoogle } from "../../lib/login";
+import { signInWithGoogle } from "../../lib/auth";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -8,6 +8,7 @@ type AuthModalProps = {
 
 const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   const handleGoogleSignIn = async () => {
+    console.log("handleGoogleSignIn called");
     try {
       await signInWithGoogle();
       onClose();
@@ -68,6 +69,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           <p className="text-black w-2/3 m-auto ">
             <Link
               href="/terms-of-service"
+              onClick={onClose}
               className="text-blue-500 hover:underline"
             >
               利用規約
@@ -75,6 +77,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             、
             <Link
               href="/privacy-policy"
+              onClick={onClose}
               className="text-blue-500 hover:underline"
             >
               プライバシーポリシー

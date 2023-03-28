@@ -4,7 +4,8 @@ import { signOut } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
-import { User } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Image from "next/image";
@@ -16,13 +17,15 @@ function classNames(...classes: string[]): string {
 }
 
 const Header: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<firebase.User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-    });
+    const unsubscribe = auth.onAuthStateChanged(
+      (user: firebase.User | null) => {
+        setUser(user);
+      }
+    );
 
     return () => {
       unsubscribe();
@@ -96,18 +99,28 @@ const Header: React.FC = () => {
                   <div>
                     <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-white hover:bg-gray-50">
                       <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                        <svg
-                          className="absolute w-12 h-12 text-gray-400 -left-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
+                        {user?.photoURL ? (
+                          <Image
+                            src={user.photoURL}
+                            alt="Profile"
+                            className="absolute w-full h-full object-cover"
+                            width={50}
+                            height={50}
+                          />
+                        ) : (
+                          <svg
+                            className="absolute w-12 h-12 text-gray-400 -left-1"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        )}
                       </div>
                     </Menu.Button>
                   </div>
@@ -125,8 +138,8 @@ const Header: React.FC = () => {
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                            <Link
+                              href="/mypage"
                               className={classNames(
                                 active
                                   ? "bg-gray-100 text-gray-900"
@@ -134,8 +147,8 @@ const Header: React.FC = () => {
                                 "block px-4 py-2 text-sm"
                               )}
                             >
-                              ユーザーネーム
-                            </a>
+                              {user?.displayName || "ユーザーネーム"}
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
