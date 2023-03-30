@@ -6,6 +6,8 @@ import Test from "@/components/Test";
 import Header from "@/components/Header";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import HeroSection from "../components/organisms/HeroSection";
+import PageTab from "../components/organisms/PageTab";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -41,9 +43,12 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-
-      <main className="flex-grow" style={{ minHeight: "150vh" }}>
+      <main
+        className="flex-grow"
+        style={{ minHeight: "150vh", backgroundColor: "white" }}
+      >
+        <HeroSection />
+        <PageTab />
         <Test />
         <nav>
           <Link href="/">TOPページ</Link>
@@ -55,13 +60,6 @@ const IndexPage: React.FC = () => {
           <Link href="/terms-of-service">利用規約ページ</Link>
         </nav>
       </main>
-      <Footer
-        className={`${
-          showFooter
-            ? "bg-white dark:bg-gray-900 fixed bottom-0 inset-x-0 z-50"
-            : "hidden"
-        }`}
-      ></Footer>
     </div>
   );
 };

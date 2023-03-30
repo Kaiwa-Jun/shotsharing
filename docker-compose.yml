@@ -15,6 +15,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=backend_development
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      # - RAILS_MASTER_KEY='config/master.key'
   db:
     image: postgres:13
     environment:

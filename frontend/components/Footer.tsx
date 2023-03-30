@@ -9,7 +9,7 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <>
-      <footer className={`some-footer-styles ${className}`}>
+      <footer className={`some-footer-styles ${className} bg-gray-100`}>
         <div className="mx-auto w-full container p-4 sm:p-6">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
