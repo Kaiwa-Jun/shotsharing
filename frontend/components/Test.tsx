@@ -10,7 +10,13 @@ const Test = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/hello`
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/hello`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
       );
       const data = await response.json();
       setData(data);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import HeroSection from "@/components/organisms/HeroSection";
+import PageButton from "../components/organisms/PageButton";
 
 const Search: React.FC = () => {
   const [showFooter, setShowFooter] = useState(false);
@@ -24,6 +24,8 @@ const Search: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow" style={{ minHeight: "150vh" }}>
+        <HeroSection />
+        <PageButton />
         検索ページ
       </main>
     </div>

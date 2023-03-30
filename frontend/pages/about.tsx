@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import HeroSection from "@/components/organisms/HeroSection";
+
+import AboutArea from "../components/organisms/AboutArea";
+import PageButton from "../components/organisms/PageButton";
 
 const About: React.FC = () => {
   const [showFooter, setShowFooter] = useState(false);
@@ -24,7 +26,9 @@ const About: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow" style={{ minHeight: "150vh" }}>
-        サービスせつめいページ
+        <HeroSection />
+        <PageButton />
+        <AboutArea />
       </main>
     </div>
   );

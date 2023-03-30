@@ -6,6 +6,8 @@ import Test from "@/components/Test";
 import Header from "@/components/Header";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import HeroSection from "../components/organisms/HeroSection";
+import PageTab from "../components/organisms/PageTab";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -45,6 +47,8 @@ const IndexPage: React.FC = () => {
         className="flex-grow"
         style={{ minHeight: "150vh", backgroundColor: "white" }}
       >
+        <HeroSection />
+        <PageTab />
         <Test />
         <nav>
           <Link href="/">TOPページ</Link>

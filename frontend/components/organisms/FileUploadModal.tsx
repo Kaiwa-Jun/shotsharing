@@ -71,6 +71,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
     } else {
       alert("ログインしていないため、投稿できません。");
     }
+    onClose();
   };
 
   const file = selectedImage ? selectedImage : null;

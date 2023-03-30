@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import MypageTab from "@/components/organisms/MypageTab";
+import UserInfo from "../components/organisms/UserInfo";
+import { Router } from "next/router";
 
 const MyPage: React.FC = () => {
   const [showFooter, setShowFooter] = useState(false);
@@ -24,6 +25,8 @@ const MyPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow" style={{ minHeight: "150vh" }}>
+        <UserInfo />
+        <MypageTab />
         マイページ
       </main>
     </div>
