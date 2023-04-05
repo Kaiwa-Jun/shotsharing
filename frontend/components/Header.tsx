@@ -12,6 +12,7 @@ import Image from "next/image";
 import FileUploadModal from "./organisms/FileUploadModal";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { usePhotoContext } from "../contexts/PhotoContext";
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
@@ -21,7 +22,9 @@ const Header: React.FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [photos, setPhotos] = useState<any[]>([]);
   const router = useRouter();
+  const { addPhoto } = usePhotoContext();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(
       (user: firebase.User | null) => {
@@ -33,6 +36,11 @@ const Header: React.FC = () => {
       unsubscribe();
     };
   }, []);
+  const handleImageUpload = (photo: any) => {
+    addPhoto(photo);
+    setShowUploadModal(false);
+  };
+
   return (
     <header>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:text-white">
@@ -75,7 +83,10 @@ const Header: React.FC = () => {
                   </svg>
                 </a>
                 {showUploadModal && (
-                  <FileUploadModal onClose={() => setShowUploadModal(false)} />
+                  <FileUploadModal
+                    onClose={() => setShowUploadModal(false)}
+                    onImageUpload={handleImageUpload}
+                  />
                 )}
 
                 <Link href="/search">

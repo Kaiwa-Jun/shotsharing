@@ -1,7 +1,10 @@
 import { useState } from "react";
+import PhotoList from "../PhotoList";
+import { usePhotoContext } from "../../contexts/PhotoContext";
 
 const PageTab = () => {
   const [activeTab, setActiveTab] = useState("profile");
+  const { photos } = usePhotoContext();
 
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -62,9 +65,9 @@ const PageTab = () => {
               role="tabpanel"
               aria-labelledby="profile-tab"
             >
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                新着のエリア
-              </p>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                <PhotoList photos={photos} />
+              </div>
             </div>
             <div
               className={`${

@@ -3,16 +3,17 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { signInWithGoogle, signOut } from "../lib/auth";
 import AuthModal from "@/components/organisms/AuthModal";
 import Test from "@/components/Test";
-import Header from "@/components/Header";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import HeroSection from "../components/organisms/HeroSection";
 import PageTab from "../components/organisms/PageTab";
+import { usePhotoContext } from "../contexts/PhotoContext";
+import { getPhotos } from "../utils/api";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showFooter, setShowFooter] = useState(false);
+  const { setAllPhotos } = usePhotoContext();
 
   useEffect(() => {
     const auth = getAuth();
@@ -39,6 +40,16 @@ const IndexPage: React.FC = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+  }, []);
+
+  useEffect(() => {
+    // API から写真を取得して、PhotoContext のステートを更新する
+    const fetchPhotos = async () => {
+      const fetchedPhotos = await getPhotos();
+      setAllPhotos(fetchedPhotos);
+    };
+
+    fetchPhotos();
   }, []);
 
   return (

@@ -5,9 +5,13 @@ import { User } from "firebase/auth";
 
 type FileUploadModalProps = {
   onClose: () => void;
+  onImageUpload: (photo: any) => void;
 };
 
-const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
+const FileUploadModal: React.FC<FileUploadModalProps> = ({
+  onClose,
+  onImageUpload,
+}) => {
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
@@ -40,21 +44,24 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const blob = dataURLtoBlob(reader.result as string);
-        setSelectedImage(blob);
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        const result = event.target?.result;
+        if (typeof result === "string") {
+          const blob = dataURLtoBlob(result);
+          setSelectedImage(blob);
+        }
       };
     }
   };
 
   const handlePostButtonClick = async () => {
     if (selectedImage && user) {
-      console.log("user.uid:", user.uid); // user.uid を出力
+      console.log("user.uid:", user.uid);
 
       try {
         const formData = new FormData();
         formData.append("image", selectedImage);
-        formData.append("user_id", user.uid); // user_id を追加
+        formData.append("user_id", user.uid);
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
@@ -64,14 +71,21 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           }
         );
         const data = await response.json();
-        // レスポンスを処理する
+        if (response.status >= 200 && response.status < 300 && data.photo) {
+          // ここでステータスコードの範囲を修正
+          onClose();
+          onImageUpload(data.photo);
+        } else {
+          // Handle the error
+          alert("アップロードに失敗しました。もう一度お試しください。");
+        }
       } catch (error) {
-        // エラーを処理する
+        // Handle the error
+        alert("アップロード中にエラーが発生しました。もう一度お試しください。");
       }
     } else {
       alert("ログインしていないため、投稿できません。");
     }
-    onClose();
   };
 
   const file = selectedImage ? selectedImage : null;
