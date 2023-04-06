@@ -84,3 +84,5 @@ export const signOut = async () => {
     console.error(error);
   }
 };
+
+export { firebaseAuth };
