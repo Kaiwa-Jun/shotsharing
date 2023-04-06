@@ -1,4 +1,4 @@
-interface Photo {
+export interface Photo {
   id: number;
   file_url: string;
   image_blob: {
@@ -10,5 +10,3 @@ interface Photo {
   f_value: number;
   created_at: string;
 }
-
-export default Photo;

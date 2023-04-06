@@ -32,7 +32,9 @@ const createUserInBackend = async (user: User) => {
   }
 };
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (
+  setUser: (user: User | null) => void
+) => {
   try {
     console.log("signInWithGoogle called");
     const result = await signInWithPopup(firebaseAuth, googleProvider);
@@ -65,6 +67,8 @@ export const signInWithGoogle = async () => {
         await createUserInBackend(newUser);
       } else {
         console.log("User found in Firestore");
+        const user: User = userSnapshot.data() as User; // Get user data from the snapshot
+        setUser(user); // Set the user data in the UserContext
       }
       console.log("After checking userSnapshot.exists");
     } else {

@@ -1,16 +1,19 @@
 import { signInWithGoogle } from "../../lib/auth";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "../../contexts/UserContext";
 
 type AuthModalProps = {
   onClose: () => void;
 };
 
 const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
+  const { setUser } = useAuth();
+
   const handleGoogleSignIn = async () => {
     console.log("handleGoogleSignIn called");
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(setUser);
       onClose();
     } catch (error) {
       console.error(error);

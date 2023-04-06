@@ -78,7 +78,7 @@ const PageTab = () => {
               aria-labelledby="dashboard-tab"
             >
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                来月のオススメのエリア
+                coming soon...
               </p>
             </div>
           </div>

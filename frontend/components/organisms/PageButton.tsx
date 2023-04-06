@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const PageButton = () => {
   return (
     <>
@@ -10,14 +12,16 @@ const PageButton = () => {
               role="tablist"
             >
               <li className="w-1/2" role="presentation">
-                <button
-                  className="inline-block p-4 rounded-t-lgborder-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                  id="profile-tab"
-                  type="button"
-                  role="tab"
-                >
-                  新着
-                </button>
+                <Link href="/">
+                  <button
+                    className="inline-block p-4 rounded-t-lgborder-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                    id="profile-tab"
+                    type="button"
+                    role="tab"
+                  >
+                    新着
+                  </button>
+                </Link>
               </li>
               <li className="w-1/2" role="presentation">
                 <button
