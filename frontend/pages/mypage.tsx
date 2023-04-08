@@ -3,10 +3,12 @@ import MypageTab from "@/components/organisms/MypageTab";
 import UserInfo from "@/components/organisms/UserInfo";
 import { Router } from "next/router";
 import { firebaseAuth } from "../lib/auth";
+import { Photo } from "@/types/photo";
+import Image from "next/image";
 
 const MyPage: React.FC = () => {
   const [showFooter, setShowFooter] = useState(false);
-  const [userPhotos, setUserPhotos] = useState([]);
+  const [userPhotos, setUserPhotos] = useState<Photo[]>([]);
 
   const userId = firebaseAuth.currentUser ? firebaseAuth.currentUser.uid : null;
 
@@ -44,12 +46,16 @@ const MyPage: React.FC = () => {
         <MypageTab />
         <div className="grid grid-cols-3 gap-4">
           {userPhotos.map((photo) => (
-            <img
-              key={photo.id}
-              src={photo.image_url}
-              alt="User uploaded"
-              className="w-full h-auto"
-            />
+            <div key={photo.id} className="relative w-full h-auto">
+              <Image
+                src={photo.file_url}
+                alt="User uploaded"
+                layout="responsive"
+                width={1}
+                height={1}
+                className="w-full h-auto"
+              />
+            </div>
           ))}
         </div>
       </main>
