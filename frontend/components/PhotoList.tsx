@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { getPhotos } from "../utils/api";
 import { usePhotoContext } from "../contexts/PhotoContext";
@@ -21,6 +21,23 @@ interface PhotoListProps {
 }
 
 function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
+  const [imageWidth, setImageWidth] = useState<number>(0);
+  const [fixedHeight, setFixedHeight] = useState<number>(300);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      const imageRatio = 4 / 3; // 画像の縦横比
+      const height = fixedHeight;
+      const width = Math.round(height * imageRatio);
+      setImageWidth(width > screenWidth ? screenWidth : width);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex flex-wrap justify-start items-start">
       {photos.map((photo: Photo) =>
@@ -28,19 +45,24 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
           <div
             key={photo.id}
             className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-2"
+            style={{ width: imageWidth }}
           >
             {photo.file_url ? (
-              <a href="#">
-                <Image
-                  className="rounded-t-lg"
-                  src={photo.file_url}
-                  alt="Uploaded photo"
-                  width={200}
-                  height={200}
-                  layout="responsive"
-                  style={{ objectFit: "cover", objectPosition: "center" }}
-                  priority
-                />
+              <a href={`/photo/${photo.id}`}>
+                <div
+                  className="relative rounded-t-lg"
+                  style={{ height: fixedHeight }}
+                >
+                  <Image
+                    className="absolute top-0 left-0 rounded-t-lg"
+                    src={photo.file_url}
+                    alt="Uploaded photo"
+                    layout="fill"
+                    objectFit="cover"
+                    objectPosition="center"
+                    priority
+                  />
+                </div>
               </a>
             ) : (
               <div>No image available</div>

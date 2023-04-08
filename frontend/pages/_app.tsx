@@ -1,6 +1,7 @@
 import "tailwindcss/tailwind.css";
 import type { AppProps } from "next/app";
 import "../styles/globals.css";
+import "../styles/animations.css";
 import "flowbite/dist/flowbite.min.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

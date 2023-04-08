@@ -88,19 +88,38 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
     }
   };
 
+  const handleClose = () => {
+    const modalBackground = document.querySelector(
+      ".fixed.z-10.inset-0.overflow-y-auto.flex.items-center.justify-center.bg-gray-500.bg-opacity-50"
+    );
+    const modal = document.querySelector(
+      ".relative.bg-white.rounded-lg.shadow.dark\\:bg-gray-800.sm\\:p-5.w-\\[500px\\].h-\\[450px\\]"
+    );
+
+    if (modalBackground && modal) {
+      modalBackground.classList.add("bg-opacity-0");
+      modal.classList.add("-translate-y-4", "opacity-0");
+      setTimeout(() => {
+        onClose();
+      }, 300);
+    } else {
+      onClose();
+    }
+  };
+
   const file = selectedImage ? selectedImage : null;
 
   return (
     <div
-      className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 "
+      className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 transition-opacity duration-300 fadeIn"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
     >
-      <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[400px]">
+      <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
         >
           <svg
@@ -120,21 +139,16 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
         </button>
         <div className="flex flex-col items-center justify-center">
           {selectedImage ? (
-            <Image
-              className="h-auto max-w-full"
+            <img
+              className="max-h-[180px] h-auto max-w-full object-contain my-5"
               src={URL.createObjectURL(selectedImage)}
-              // src={selectedImage}
               alt="Selected image"
-              width={200}
-              height={100}
             />
           ) : (
-            <Image
-              className="h-auto max-w-full"
-              src="https://flowbite.com/docs/images/logo.svg"
-              alt="image description"
-              width={200}
-              height={100}
+            <img
+              className="max-h-[180px] h-auto max-w-full object-contain my-5"
+              src="/upload-default.svg"
+              alt="Default image"
             />
           )}
 
@@ -152,16 +166,16 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             SVG, PNG, JPG or GIF (MAX. 800x400px).
           </p>
 
-          <label className="relative inline-flex items-center cursor-pointer">
+          <label className="relative inline-flex items-center cursor-pointer mt-5">
             <input type="checkbox" value="" className="sr-only peer" />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
               撮影場所を共有する
             </span>
           </label>
-          <div className="flex">
+          <div className="flex mt-10">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               type="button"
               className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >

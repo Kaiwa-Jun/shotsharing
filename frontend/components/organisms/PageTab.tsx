@@ -6,10 +6,6 @@ const PageTab = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const { photos } = usePhotoContext();
 
-  const handleTabClick = (tabName: string) => {
-    setActiveTab(tabName);
-  };
-
   return (
     <>
       <div className="flex justify-center">
@@ -32,7 +28,7 @@ const PageTab = () => {
                   role="tab"
                   aria-controls="profile"
                   aria-selected={activeTab === "profile"}
-                  onClick={() => handleTabClick("profile")}
+                  onClick={() => setActiveTab("profile")}
                 >
                   新着
                 </button>
@@ -49,7 +45,7 @@ const PageTab = () => {
                   role="tab"
                   aria-controls="dashboard"
                   aria-selected={activeTab === "dashboard"}
-                  onClick={() => handleTabClick("dashboard")}
+                  onClick={() => setActiveTab("dashboard")}
                 >
                   来月のオススメ
                 </button>
