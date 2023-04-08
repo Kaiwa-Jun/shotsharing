@@ -5,12 +5,13 @@ const PrivacyPolicy: React.FC = () => {
         <main className="flex-grow" style={{ minHeight: "150vh" }}>
           <div className="flex flex-col min-h-screen max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold my-3">プライバシーポリシー</h1>
-            <div className="py-5 border-t-2 border-gray-200">
+            <div className="pt-5 border-t-2 border-gray-200">
               <p className="max-w-4xl space-y-1  list-disc list-inside pl-4 text-sm">
-                ○○
+                ShotSharing
                 の運営者（以下、「当方」といいます。）が本ウェブサイト上で提供するサービス（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。
                 <br />
-                ○○を利用する登録ユーザーは、本規約の全ての記載内容について同意したものとみなされます。
+                <br />
+                ShotSharingを利用する登録ユーザーは、本規約の全ての記載内容について同意したものとみなされます。
               </p>
             </div>
 
@@ -96,14 +97,14 @@ const PrivacyPolicy: React.FC = () => {
               <p className="max-w-4xl my-2  list-disc list-inside pl-4 text-sm">
                 お客様の情報の開示、情報の訂正、利用停止、削除をご希望の場合は、以下のTwitterアカウント、Googleフォームにご連絡ください。
                 <br />
-                Twitterアカウント : @aaabbbcccddd
-                <br />
-                Googleフォーム : @aaabbbcccddd
+                Twitterアカウント : @crew_runteq38
+                {/* <br />
+                Googleフォーム : @aaabbbcccddd */}
               </p>
             </div>
             <div className="my-5 border-t-2 border-gray-200">
               <p className="max-w-4xl my-2  list-disc list-inside pl-4 text-sm">
-                2023年○月○日 制定
+                2023年4月16日 制定
               </p>
             </div>
           </div>

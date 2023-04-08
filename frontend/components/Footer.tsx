@@ -34,14 +34,14 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                       ShotSharingについて
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       href="https://tailwindcss.com/"
                       className="hover:underline"
                     >
                       お問い合わせ
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               <div>
@@ -71,7 +71,9 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             </span>
             <div className="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
               <Link
-                href="#"
+                href="https://twitter.com/crew_runteq38"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
               >
                 <svg
@@ -85,7 +87,9 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                 <span className="sr-only">Twitter page</span>
               </Link>
               <Link
-                href="#"
+                href="https://github.com/Kaiwa-Jun/shotsharing"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
               >
                 <svg
