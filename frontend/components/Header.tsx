@@ -24,7 +24,8 @@ const Header: React.FC = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [photos, setPhotos] = useState<any[]>([]);
   const router = useRouter();
-  const { addPhoto } = usePhotoContext();
+  const { addPhoto, handleImageUpload } = usePhotoContext();
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(
       (user: firebase.User | null) => {
@@ -36,10 +37,6 @@ const Header: React.FC = () => {
       unsubscribe();
     };
   }, []);
-  const handleImageUpload = (photo: any) => {
-    addPhoto(photo);
-    setShowUploadModal(false);
-  };
 
   const handleUploadButtonClick = () => {
     setShowUploadModal(true);
@@ -94,7 +91,10 @@ const Header: React.FC = () => {
                 {showUploadModal && (
                   <FileUploadModal
                     onClose={() => setShowUploadModal(false)}
-                    onImageUpload={handleImageUpload}
+                    onImageUpload={(photo: any) => {
+                      handleImageUpload(photo);
+                      router.reload();
+                    }}
                   />
                 )}
 

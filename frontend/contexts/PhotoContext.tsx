@@ -6,7 +6,7 @@ import {
   useEffect,
 } from "react";
 
-interface Photo {
+export interface Photo {
   id: number;
   file_url: string;
   image_blob: {
@@ -23,12 +23,14 @@ type PhotoContextType = {
   photos: Photo[];
   addPhoto: (photo: Photo) => void;
   setAllPhotos: (photos: Photo[]) => void;
+  handleImageUpload: (photo: Photo) => void;
 };
 
 const PhotoContext = createContext<PhotoContextType>({
   photos: [],
   addPhoto: () => {},
   setAllPhotos: () => {},
+  handleImageUpload: () => {},
 });
 
 export const usePhotoContext = () => useContext(PhotoContext);
@@ -56,12 +58,18 @@ export const PhotoProvider = ({ children }: PhotoProviderProps) => {
     setPhotos(photos);
   };
 
+  const handleImageUpload = (photo: Photo) => {
+    addPhoto(photo);
+  };
+
   useEffect(() => {
     console.log("A photo has been added or removed.", photos);
   }, [photos.length]);
 
   return (
-    <PhotoContext.Provider value={{ photos, addPhoto, setAllPhotos }}>
+    <PhotoContext.Provider
+      value={{ photos, addPhoto, setAllPhotos, handleImageUpload }}
+    >
       {children}
     </PhotoContext.Provider>
   );

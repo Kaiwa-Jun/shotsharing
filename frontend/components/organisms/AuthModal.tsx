@@ -2,6 +2,8 @@ import { signInWithGoogle } from "../../lib/auth";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../contexts/UserContext";
+import { auth } from "../../lib/firebaseConfig";
+import { useState } from "react";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -9,6 +11,9 @@ type AuthModalProps = {
 
 const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   const { setUser } = useAuth();
+  const [buttonImage, setButtonImage] = useState(
+    "/btn_google_signin_light_normal_web@2x.png"
+  );
 
   const handleGoogleSignIn = async () => {
     console.log("handleGoogleSignIn called");
@@ -48,7 +53,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           </svg>
           <span className="sr-only">Close modal</span>
         </button>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center my-14">
           <Link href="/" className="flex items-center">
             <Image
               src="https://flowbite.com/docs/images/logo.svg"
@@ -61,15 +66,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               ShotSharing
             </span>
           </Link>
-          <div className="flex items-center justify-center my-10">
-            <button
-              onClick={handleGoogleSignIn}
-              className=" text-black bg-white hover:bg-gray-400 focus:ring-4 focus:ring-blue-800 font-medium rounded-sl text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100 drop-shadow-lg"
-            >
-              Login with Google
-            </button>
+          <div
+            className="mt-14 border-2 border-none rounded-sl inline-block"
+            onMouseEnter={() =>
+              setButtonImage("/btn_google_signin_light_focus_web@2x.png")
+            }
+            onMouseLeave={() =>
+              setButtonImage("/btn_google_signin_light_normal_web@2x.png")
+            }
+            onMouseDown={() =>
+              setButtonImage("/btn_google_signin_light_pressed_web@2x.png")
+            }
+            onMouseUp={() =>
+              setButtonImage("/btn_google_signin_light_normal_web@2x.png")
+            }
+            onClick={handleGoogleSignIn}
+          >
+            <Image
+              src={buttonImage}
+              alt="Google sign-in icon"
+              width={240}
+              height={40}
+            />
           </div>
-          <p className="text-black w-2/3 m-auto ">
+
+          <p className="text-black w-2/3 mx-auto my-10">
             <Link
               href="/terms-of-service"
               onClick={onClose}

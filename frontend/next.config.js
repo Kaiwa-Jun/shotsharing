@@ -4,6 +4,7 @@ module.exports = {
     domains: [
       "lh3.googleusercontent.com",
       "shotsharing.s3.ap-northeast-1.amazonaws.com",
+      "localhost",
     ],
   },
   async rewrites() {

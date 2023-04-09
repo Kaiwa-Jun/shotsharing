@@ -2,6 +2,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { User } from "firebase/auth";
+import { Photo } from "../../contexts/PhotoContext";
 
 type FileUploadModalProps = {
   onClose: () => void;
@@ -71,12 +72,24 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           }
         );
         const data = await response.json();
-        if (response.status >= 200 && response.status < 300 && data.photo) {
-          // ここでステータスコードの範囲を修正
+        if (response.status >= 200 && response.status < 300 && data.url) {
+          const photo: Photo = {
+            id: data.id,
+            file_url: data.url,
+            image_blob: {
+              filename: data.filename, // 必要に応じて API から返された値をセットする
+            },
+            camera_model: data.camera_model || "",
+            shutter_speed: data.shutter_speed || "",
+            iso: data.iso || 0,
+            f_value: data.f_value || 0,
+            created_at: data.created_at || "", // 必要に応じて API から返された値をセットする
+          };
           onClose();
-          onImageUpload(data.photo);
+          onImageUpload(photo);
         } else {
-          // Handle the error
+          console.log("Error response:", response);
+          console.log("Error data:", data);
           alert("アップロードに失敗しました。もう一度お試しください。");
         }
       } catch (error) {
