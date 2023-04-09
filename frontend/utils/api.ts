@@ -5,20 +5,28 @@ interface GetPhotosParams {
   firebase_uid: string;
 }
 
-export const getPhotos = async (params: GetPhotosParams): Promise<Photo[]> => {
-  const stringParams: Record<string, string> = {};
+export async function getPhotos({
+  firebase_uid,
+  all_users,
+}: {
+  firebase_uid?: string;
+  all_users?: boolean;
+}): Promise<Photo[]> {
+  let url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`;
 
-  if (params?.firebase_uid) {
-    stringParams.firebase_uid = params.firebase_uid;
+  if (firebase_uid) {
+    url += `?firebase_uid=${firebase_uid}`;
+  } else if (all_users) {
+    url += `?all_users=true`;
   }
 
-  const queryParams = new URLSearchParams(stringParams).toString();
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos?${queryParams}`
-  );
-  const data = await response.json();
-  return data;
-};
+  const response = await fetch(url);
+  console.log("Response:", response);
+  if (!response.ok) {
+    throw new Error("Failed to fetch photos");
+  }
+  return await response.json();
+}
 
 export async function getPhotoById(
   id: string | string[]

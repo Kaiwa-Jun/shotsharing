@@ -10,9 +10,11 @@ const MyPhotos: React.FC = () => {
   console.log("User:", user);
 
   useEffect(() => {
+    console.log("user:", user);
     if (user) {
       getPhotos({ firebase_uid: user.firebase_uid })
         .then((photos) => {
+          console.log("Fetched photos:", photos);
           setMyPhotos(photos);
         })
         .catch((err) => {

@@ -48,6 +48,9 @@ const IndexPage: React.FC = () => {
       if (user) {
         const fetchedPhotos = await getPhotos({ firebase_uid: user.uid });
         setAllPhotos(fetchedPhotos);
+      } else {
+        const fetchedPhotos = await getPhotos({ all_users: true });
+        setAllPhotos(fetchedPhotos);
       }
     };
 
