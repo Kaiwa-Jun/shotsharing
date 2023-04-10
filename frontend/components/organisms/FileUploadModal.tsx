@@ -15,6 +15,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
 }) => {
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [locationEnabled, setLocationEnabled] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -63,6 +64,32 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
         const formData = new FormData();
         formData.append("image", selectedImage);
         formData.append("user_id", user.uid);
+        formData.append("location_enabled", String(locationEnabled));
+
+        if (locationEnabled) {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                formData.append("latitude", String(position.coords.latitude));
+                formData.append("longitude", String(position.coords.longitude));
+                resolve(null);
+              },
+              (error) => {
+                console.error("Error getting location:", error);
+                if (error.code === error.PERMISSION_DENIED) {
+                  alert(
+                    "位置情報へのアクセスが許可されていません。設定を確認してください。"
+                  );
+                } else {
+                  alert(
+                    "位置情報を取得できませんでした。もう一度お試しください。"
+                  );
+                }
+                reject(error);
+              }
+            );
+          });
+        }
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
@@ -180,7 +207,13 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           </p>
 
           <label className="relative inline-flex items-center cursor-pointer mt-5">
-            <input type="checkbox" value="" className="sr-only peer" />
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              checked={locationEnabled}
+              onChange={(e) => setLocationEnabled(e.target.checked)}
+            />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
               撮影場所を共有する
