@@ -1,21 +1,10 @@
 import { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  useLocation,
-} from "react-router-dom";
-import MyPhotos from "./MyPhotos";
-import MyLikes from "./MyLikes";
-import MyComments from "./MyComments";
-import MyFavorites from "./MyFavorites";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
-const MypageTabContent = () => {
+const MypageTab: React.FC = () => {
   const router = useRouter();
   const activeTab = router.pathname.split("/").pop() || "posts";
-  const location = useLocation();
   const activeStyle = "border-indigo-500 text-indigo-600";
   const inactiveStyle =
     "border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300";
@@ -30,67 +19,58 @@ const MypageTabContent = () => {
             role="tablist"
           >
             <li className="w-1/4" role="presentation">
-              <Link
-                to="/mypage/posts"
-                className={`inline-block p-4 border-b-2 rounded-t-lg ${
-                  activeTab === "posts" ? activeStyle : inactiveStyle
-                }`}
-              >
-                投稿
+              <Link href="/mypage/posts">
+                <div
+                  className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
+                    activeTab === "posts" ? activeStyle : inactiveStyle
+                  }`}
+                  onClick={() => router.push("/mypage/posts")}
+                >
+                  投稿
+                </div>
               </Link>
             </li>
             <li className="w-1/4" role="presentation">
-              <Link
-                to="/mypage/likes"
-                className={`inline-block p-4 border-b-2 rounded-t-lg ${
-                  activeTab === "likes" ? activeStyle : inactiveStyle
-                }`}
-              >
-                いいね
+              <Link href="/mypage/likes">
+                <div
+                  className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
+                    activeTab === "likes" ? activeStyle : inactiveStyle
+                  }`}
+                  onClick={() => router.push("/mypage/likes")}
+                >
+                  いいね
+                </div>
               </Link>
             </li>
             <li className="w-1/4" role="presentation">
-              <Link
-                to="/mypage/comments"
-                className={`inline-block p-4 border-b-2 rounded-t-lg ${
-                  activeTab === "comments" ? activeStyle : inactiveStyle
-                }`}
-              >
-                コメント
+              <Link href="/mypage/comments">
+                <div
+                  className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
+                    activeTab === "comments" ? activeStyle : inactiveStyle
+                  }`}
+                  onClick={() => router.push("/mypage/comments")}
+                >
+                  コメント
+                </div>
               </Link>
             </li>
             <li className="w-1/4" role="presentation">
-              <Link
-                to="/mypage/favorites"
-                className={`inline-block p-4 border-b-2 rounded-t-lg ${
-                  activeTab === "favorites" ? activeStyle : inactiveStyle
-                }`}
-              >
-                お気に入り
+              <Link href="/mypage/favorites">
+                <div
+                  className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
+                    activeTab === "favorites" ? activeStyle : inactiveStyle
+                  }`}
+                  onClick={() => router.push("/mypage/favorites")}
+                >
+                  お気に入り
+                </div>
               </Link>
             </li>
           </ul>
         </div>
-        <div>
-          <Routes>
-            <Route path="/mypage/posts" element={<MyPhotos />} />
-            <Route path="/mypage/likes" element={<MyLikes />} />
-            <Route path="/mypage/comments" element={<MyComments />} />
-            <Route path="/mypage/favorites" element={<MyFavorites />} />
-          </Routes>
-        </div>
+        <div>{/* 各タブのコンテンツは、それぞれのページで表示されます */}</div>
       </div>
     </div>
-  );
-};
-
-const MypageTab = () => {
-  return (
-    <>
-      <Router>
-        <MypageTabContent />
-      </Router>
-    </>
   );
 };
 

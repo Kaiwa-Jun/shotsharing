@@ -3,16 +3,17 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { signInWithGoogle, signOut } from "../lib/auth";
 import AuthModal from "@/components/organisms/AuthModal";
 import Test from "@/components/Test";
-import Header from "@/components/Header";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import HeroSection from "../components/organisms/HeroSection";
 import PageTab from "../components/organisms/PageTab";
+import { usePhotoContext } from "../contexts/PhotoContext";
+import { getPhotos } from "../utils/api";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showFooter, setShowFooter] = useState(false);
+  const { setAllPhotos } = usePhotoContext();
 
   useEffect(() => {
     const auth = getAuth();
@@ -41,6 +42,21 @@ const IndexPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // API から写真を取得して、PhotoContext のステートを更新する
+    const fetchPhotos = async () => {
+      if (user) {
+        const fetchedPhotos = await getPhotos({ firebase_uid: user.uid });
+        setAllPhotos(fetchedPhotos);
+      } else {
+        const fetchedPhotos = await getPhotos({ all_users: true });
+        setAllPhotos(fetchedPhotos);
+      }
+    };
+
+    fetchPhotos();
+  }, [user]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <main
@@ -49,16 +65,6 @@ const IndexPage: React.FC = () => {
       >
         <HeroSection />
         <PageTab />
-        <Test />
-        <nav>
-          <Link href="/">TOPページ</Link>
-          <Link href="/image-detail">画像の詳細ページ</Link>
-          <Link href="/mypage">マイページ</Link>
-          <Link href="/search">検索ページ</Link>
-          <Link href="/about">サービス説明ページ</Link>
-          <Link href="/privacy-policy">プライバシーポリシーページ</Link>
-          <Link href="/terms-of-service">利用規約ページ</Link>
-        </nav>
       </main>
     </div>
   );

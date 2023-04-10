@@ -30,7 +30,7 @@ const AboutArea = () => {
           <div className="grid max-w-screen-xl px-24 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-0 lg:grid-cols-10">
             <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
               <Image
-                src="/Camera-rafiki.png"
+                src="/Camera-amico.png"
                 alt="mockup"
                 width={400}
                 height={400}

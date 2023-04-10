@@ -12,6 +12,7 @@ import Image from "next/image";
 import FileUploadModal from "./organisms/FileUploadModal";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { usePhotoContext } from "../contexts/PhotoContext";
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
@@ -21,7 +22,10 @@ const Header: React.FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [photos, setPhotos] = useState<any[]>([]);
   const router = useRouter();
+  const { addPhoto, handleImageUpload } = usePhotoContext();
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(
       (user: firebase.User | null) => {
@@ -33,6 +37,16 @@ const Header: React.FC = () => {
       unsubscribe();
     };
   }, []);
+
+  const handleUploadButtonClick = () => {
+    setShowUploadModal(true);
+  };
+
+  // 検索ボタンのクリックイベントハンドラー
+  const handleSearchButtonClick = () => {
+    router.push("/search");
+  };
+
   return (
     <header>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:text-white">
@@ -55,8 +69,8 @@ const Header: React.FC = () => {
           <div className="flex items-center lg:order-2">
             {user ? (
               <>
-                <a
-                  onClick={() => setShowUploadModal(true)}
+                <button
+                  onClick={handleUploadButtonClick}
                   className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
                   <svg
@@ -73,29 +87,36 @@ const Header: React.FC = () => {
                       d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                </a>
+                </button>
                 {showUploadModal && (
-                  <FileUploadModal onClose={() => setShowUploadModal(false)} />
+                  <FileUploadModal
+                    onClose={() => setShowUploadModal(false)}
+                    onImageUpload={(photo: any) => {
+                      handleImageUpload(photo);
+                      router.reload();
+                    }}
+                  />
                 )}
 
-                <Link href="/search">
-                  <div className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100 cursor-pointer">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                      />
-                    </svg>
-                  </div>
-                </Link>
+                <button
+                  onClick={handleSearchButtonClick}
+                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
+                  </svg>
+                </button>
 
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -140,33 +161,36 @@ const Header: React.FC = () => {
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
-                            <div
-                              onClick={() => router.push("/mypage")}
-                              className={classNames(
-                                active
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-700",
-                                "block px-4 py-2 text-sm cursor-pointer"
-                              )}
-                            >
-                              {user?.displayName || "ユーザーネーム"}
-                            </div>
+                            <Link href="/mypage/posts">
+                              <div
+                                className={classNames(
+                                  active
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-700",
+                                  "block px-4 py-2 text-sm cursor-pointer"
+                                )}
+                              >
+                                {user?.displayName || "ユーザーネーム"}
+                              </div>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <div
-                              className={classNames(
-                                active
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-700",
-                                "block px-4 py-2 text-sm cursor-pointer"
-                              )}
-                            >
-                              プロフィール編集
-                            </div>
+                            <Link href="/mypage/profile/edit">
+                              <div
+                                className={classNames(
+                                  active
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-700",
+                                  "block px-4 py-2 text-sm cursor-pointer"
+                                )}
+                              >
+                                プロフィール編集
+                              </div>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
@@ -245,24 +269,25 @@ const Header: React.FC = () => {
               </>
             ) : (
               <>
-                <Link href="/search" legacyBehavior>
-                  <a className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                      />
-                    </svg>
-                  </a>
-                </Link>
+                <button
+                  onClick={handleSearchButtonClick}
+                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
+                  </svg>
+                </button>
                 <button
                   onClick={() => setShowModal(true)}
                   className="text-white dark:text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-100"

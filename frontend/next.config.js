@@ -1,7 +1,11 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    domains: [
+      "lh3.googleusercontent.com",
+      "shotsharing.s3.ap-northeast-1.amazonaws.com",
+      "localhost",
+    ],
   },
   async rewrites() {
     return [

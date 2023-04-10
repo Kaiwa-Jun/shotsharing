@@ -26,7 +26,7 @@ const Search: React.FC = () => {
       <main className="flex-grow" style={{ minHeight: "150vh" }}>
         <HeroSection />
         <PageButton />
-        検索ページ
+        coming soon...
       </main>
     </div>
   );

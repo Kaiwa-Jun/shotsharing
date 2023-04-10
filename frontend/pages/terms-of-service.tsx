@@ -7,7 +7,7 @@ const TermsOfService: React.FC = () => {
             <h1 className="text-3xl font-bold my-3">利用規約</h1>
             <div className="py-5 border-t-2 border-gray-200">
               <p className="max-w-4xl space-y-1  list-disc list-inside pl-4 text-sm">
-                この利用規約（以下、「本規約」といいます。）は、○○（以下、「当方」といいます。）がこのウェブサイト上で提供するサービス（以下、「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。
+                この利用規約（以下、「本規約」といいます。）は、ShotSharing（以下、「当方」といいます。）がこのウェブサイト上で提供するサービス（以下、「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。
               </p>
             </div>
 
@@ -234,7 +234,7 @@ const TermsOfService: React.FC = () => {
               <p className="max-w-4xl my-2  list-disc list-inside pl-4 text-sm">
                 以上
                 <br />
-                2023年○月○日 制定
+                2023年4月16日 制定
               </p>
             </div>
           </div>

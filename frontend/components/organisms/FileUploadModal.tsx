@@ -2,14 +2,20 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { User } from "firebase/auth";
+import { Photo } from "../../contexts/PhotoContext";
 
 type FileUploadModalProps = {
   onClose: () => void;
+  onImageUpload: (photo: any) => void;
 };
 
-const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
+const FileUploadModal: React.FC<FileUploadModalProps> = ({
+  onClose,
+  onImageUpload,
+}) => {
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [locationEnabled, setLocationEnabled] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -40,21 +46,50 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const blob = dataURLtoBlob(reader.result as string);
-        setSelectedImage(blob);
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        const result = event.target?.result;
+        if (typeof result === "string") {
+          const blob = dataURLtoBlob(result);
+          setSelectedImage(blob);
+        }
       };
     }
   };
 
   const handlePostButtonClick = async () => {
     if (selectedImage && user) {
-      console.log("user.uid:", user.uid); // user.uid を出力
+      console.log("user.uid:", user.uid);
 
       try {
         const formData = new FormData();
         formData.append("image", selectedImage);
-        formData.append("user_id", user.uid); // user_id を追加
+        formData.append("user_id", user.uid);
+        formData.append("location_enabled", String(locationEnabled));
+
+        if (locationEnabled) {
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                formData.append("latitude", String(position.coords.latitude));
+                formData.append("longitude", String(position.coords.longitude));
+                resolve(null);
+              },
+              (error) => {
+                console.error("Error getting location:", error);
+                if (error.code === error.PERMISSION_DENIED) {
+                  alert(
+                    "位置情報へのアクセスが許可されていません。設定を確認してください。"
+                  );
+                } else {
+                  alert(
+                    "位置情報を取得できませんでした。もう一度お試しください。"
+                  );
+                }
+                reject(error);
+              }
+            );
+          });
+        }
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
@@ -64,29 +99,67 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           }
         );
         const data = await response.json();
-        // レスポンスを処理する
+        if (response.status >= 200 && response.status < 300 && data.url) {
+          const photo: Photo = {
+            id: data.id,
+            file_url: data.url,
+            image_blob: {
+              filename: data.filename, // 必要に応じて API から返された値をセットする
+            },
+            camera_model: data.camera_model || "",
+            shutter_speed: data.shutter_speed || "",
+            iso: data.iso || 0,
+            f_value: data.f_value || 0,
+            created_at: data.created_at || "", // 必要に応じて API から返された値をセットする
+          };
+          onClose();
+          onImageUpload(photo);
+        } else {
+          console.log("Error response:", response);
+          console.log("Error data:", data);
+          alert("アップロードに失敗しました。もう一度お試しください。");
+        }
       } catch (error) {
-        // エラーを処理する
+        // Handle the error
+        alert("アップロード中にエラーが発生しました。もう一度お試しください。");
       }
     } else {
       alert("ログインしていないため、投稿できません。");
     }
-    onClose();
+  };
+
+  const handleClose = () => {
+    const modalBackground = document.querySelector(
+      ".fixed.z-10.inset-0.overflow-y-auto.flex.items-center.justify-center.bg-gray-500.bg-opacity-50"
+    );
+    const modal = document.querySelector(
+      ".relative.bg-white.rounded-lg.shadow.dark\\:bg-gray-800.sm\\:p-5.w-\\[500px\\].h-\\[450px\\]"
+    );
+
+    if (modalBackground && modal) {
+      modalBackground.classList.add("bg-opacity-0");
+      modal.classList.add("-translate-y-4", "opacity-0");
+      setTimeout(() => {
+        onClose();
+      }, 300);
+    } else {
+      onClose();
+    }
   };
 
   const file = selectedImage ? selectedImage : null;
 
   return (
     <div
-      className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 "
+      className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 transition-opacity duration-300 fadeIn"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
     >
-      <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[400px]">
+      <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
         >
           <svg
@@ -106,21 +179,16 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
         </button>
         <div className="flex flex-col items-center justify-center">
           {selectedImage ? (
-            <Image
-              className="h-auto max-w-full"
+            <img
+              className="max-h-[180px] h-auto max-w-full object-contain my-5"
               src={URL.createObjectURL(selectedImage)}
-              // src={selectedImage}
               alt="Selected image"
-              width={200}
-              height={100}
             />
           ) : (
-            <Image
-              className="h-auto max-w-full"
-              src="https://flowbite.com/docs/images/logo.svg"
-              alt="image description"
-              width={200}
-              height={100}
+            <img
+              className="max-h-[180px] h-auto max-w-full object-contain my-5"
+              src="/upload-default.svg"
+              alt="Default image"
             />
           )}
 
@@ -138,16 +206,22 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
             SVG, PNG, JPG or GIF (MAX. 800x400px).
           </p>
 
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
+          <label className="relative inline-flex items-center cursor-pointer mt-5">
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              checked={locationEnabled}
+              onChange={(e) => setLocationEnabled(e.target.checked)}
+            />
             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
               撮影場所を共有する
             </span>
           </label>
-          <div className="flex">
+          <div className="flex mt-10">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               type="button"
               className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
