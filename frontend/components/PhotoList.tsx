@@ -28,6 +28,8 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const [showDeleteModal, setShowDeleteModal] = useState<
     Record<number, boolean>
   >({});
+  const [editModalId, setEditModalId] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,6 +105,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                     onClick={(event) => {
                       event.stopPropagation();
                       toggleModal(photo.id);
+                      setEditModalId(photo.id);
                     }}
                   >
                     <svg
@@ -231,6 +234,99 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                 >
                   削除
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {editModalId !== null && (
+        <div
+          id="edit-modal"
+          tabindex="-1"
+          class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
+        >
+          <div
+            className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 transition-opacity duration-300 fadeIn"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditModalId(null);
+                }}
+                className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="flex flex-col items-center justify-center">
+                {selectedImage ? (
+                  <img
+                    className="max-h-[180px] h-auto max-w-full object-contain my-5"
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Selected image"
+                  />
+                ) : (
+                  <img
+                    className="max-h-[180px] h-auto max-w-full object-contain my-5"
+                    src="/upload-default.svg"
+                    alt="Default image"
+                  />
+                )}
+
+                <input
+                  className="block w-[350px] mb-0 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="small_size"
+                  type="file"
+                  // onChange={handleImageChange}
+                />
+
+                <p
+                  className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+                  id="file_input_help"
+                >
+                  SVG, PNG, JPG or GIF (MAX. 800x400px).
+                </p>
+
+                <label className="relative inline-flex items-center cursor-pointer mt-5">
+                  <input type="checkbox" value="" className="sr-only peer" />
+                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                    撮影場所を共有する
+                  </span>
+                </label>
+                <div className="flex mt-10">
+                  <button
+                    onClick={() => {
+                      setEditModalId(null);
+                    }}
+                    type="button"
+                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    type="button"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    編集を保存
+                  </button>
+                </div>
               </div>
             </div>
           </div>
