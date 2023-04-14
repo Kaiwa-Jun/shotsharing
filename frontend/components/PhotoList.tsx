@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { getPhotos } from "../utils/api";
-import { usePhotoContext } from "../contexts/PhotoContext";
+import { deletePhoto } from "../utils/api/deletePhoto";
+import { useRouter } from "next/router";
 
 interface Photo {
   id: number;
@@ -30,6 +30,9 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   >({});
   const [editModalId, setEditModalId] = useState<number | null>(null);
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,6 +52,17 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     setShowModal(showModal === photoId ? null : photoId);
   };
 
+  const onDelete = async () => {
+    if (deleteModalId) {
+      // バックエンドで削除処理を実行
+      await deletePhoto(deleteModalId);
+      // モーダルを閉じる
+      setDeleteModalId(null);
+      // フロントエンドで削除処理を実行
+      router.reload();
+    }
+  };
+
   return (
     <div className="flex flex-wrap justify-start items-start">
       {photos.map((photo: Photo) =>
@@ -65,7 +79,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                   style={{ height: fixedHeight }}
                 >
                   <Image
-                    className="absolute top-0 left-0 rounded    t-lg"
+                    className="absolute top-0 left-0 rounded t-lg"
                     src={photo.file_url}
                     alt="Uploaded photo"
                     layout="fill"
@@ -112,13 +126,13 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="currentColor"
                       className="w-5 h-5 mr-2"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
                       />
                     </svg>
@@ -136,7 +150,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="currentColor"
                       className="w-5 h-5 mr-2"
                     >
@@ -169,7 +183,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
         <div
           id="popup-modal"
           tabindex="-1"
-          class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
+          className="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
         >
           <div className="relative w-full max-w-md max-h-full mx-auto">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -228,6 +242,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                   キャンセル
                 </button>
                 <button
+                  onClick={onDelete}
                   data-modal-hide="popup-modal"
                   type="button"
                   className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center "
@@ -243,7 +258,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
         <div
           id="edit-modal"
           tabindex="-1"
-          class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
+          className="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
         >
           <div
             className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-50 transition-opacity duration-300 fadeIn"
@@ -316,7 +331,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       setEditModalId(null);
                     }}
                     type="button"
-                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    className="py-2.5 px-5 mr-6 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   >
                     キャンセル
                   </button>

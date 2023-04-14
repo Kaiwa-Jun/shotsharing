@@ -8,6 +8,7 @@ import HeroSection from "../components/organisms/HeroSection";
 import PageTab from "../components/organisms/PageTab";
 import { usePhotoContext } from "../contexts/PhotoContext";
 import { getPhotos } from "../utils/api";
+import { PhotoProvider } from "../contexts/PhotoContext";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);

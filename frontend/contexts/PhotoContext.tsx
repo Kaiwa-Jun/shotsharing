@@ -62,6 +62,16 @@ export const PhotoProvider = ({ children }: PhotoProviderProps) => {
     addPhoto(photo);
   };
 
+  const fetchPhotos = async () => {
+    try {
+      const res = await fetch("/api/photos");
+      const data = await res.json();
+      setPhotos(data.photos);
+    } catch (error) {
+      console.error("Failed to fetch photos", error);
+    }
+  };
+
   useEffect(() => {
     console.log("A photo has been added or removed.", photos);
   }, [photos.length]);
