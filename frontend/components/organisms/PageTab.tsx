@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PhotoList from "../PhotoList";
+import RecommendList from "../RecommendList";
 import { usePhotoContext } from "../../contexts/PhotoContext";
 
 const PageTab = () => {
@@ -73,9 +74,9 @@ const PageTab = () => {
               role="tabpanel"
               aria-labelledby="dashboard-tab"
             >
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                coming soon...
-              </p>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                <RecommendList photos={photos} />
+              </div>
             </div>
           </div>
         </div>
