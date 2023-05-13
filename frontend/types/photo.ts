@@ -9,6 +9,7 @@ export interface Photo {
   iso: number;
   f_value: number;
   created_at: string;
+  taken_at: string;
   user: {
     id: number;
     display_name: string;

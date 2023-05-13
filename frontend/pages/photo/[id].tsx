@@ -59,6 +59,14 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
             <p className="text-gray-900">
               シャッタースピード: {photo.shutter_speed}
             </p>
+            <p className="text-gray-900">
+              撮影日:{" "}
+              {new Date(photo.taken_at).toLocaleString("ja-JP", {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+              })}
+            </p>
           </div>
         </div>
       </div>
