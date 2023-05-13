@@ -69,7 +69,6 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
 
           // 写真の撮影日を取得
           const takenAt = new Date(photo.taken_at);
-          console.log(takenAt);
 
           console.log("Taken At Year:", takenAt.getFullYear());
           console.log("Taken At Month:", takenAt.getMonth());
@@ -80,6 +79,10 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
             takenAt.getMonth() === nextMonth
           );
         })
+        .sort(
+          (a: Photo, b: Photo) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
         .map((photo: Photo) =>
           !photo ? null : (
             <div
