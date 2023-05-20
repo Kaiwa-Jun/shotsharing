@@ -33,7 +33,7 @@ export async function getPhotoById(
 ): Promise<Photo | null> {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/${id}`
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${id}`
     );
     return res.data;
   } catch (error) {

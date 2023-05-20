@@ -23,6 +23,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   if (!photo) {
     return <div>Loading...</div>;
   }
+  console.log("presignedURL:", photo.file_url);
 
   return (
     <>
