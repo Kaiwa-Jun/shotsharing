@@ -58,8 +58,8 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       : currentDate.getFullYear();
   const nextMonth = (currentDate.getMonth() + 1) % 12;
 
-  console.log("Next Month Year:", nextMonthYear);
-  console.log("Next Month:", nextMonth);
+  // console.log("Next Month Year:", nextMonthYear);
+  // console.log("Next Month:", nextMonth);
 
   return (
     <div className="flex flex-wrap justify-start items-start">
@@ -70,8 +70,8 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
           // 写真の撮影日を取得
           const takenAt = new Date(photo.taken_at);
 
-          console.log("Taken At Year:", takenAt.getFullYear());
-          console.log("Taken At Month:", takenAt.getMonth());
+          // console.log("Taken At Year:", takenAt.getFullYear());
+          // console.log("Taken At Month:", takenAt.getMonth());
 
           // 写真の撮影日が来月のものだけを含める
           return (
