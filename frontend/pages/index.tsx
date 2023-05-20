@@ -46,13 +46,8 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     // API から写真を取得して、PhotoContext のステートを更新する
     const fetchPhotos = async () => {
-      if (user) {
-        const fetchedPhotos = await getPhotos({ firebase_uid: user.uid });
-        setAllPhotos(fetchedPhotos);
-      } else {
-        const fetchedPhotos = await getPhotos({ all_users: true });
-        setAllPhotos(fetchedPhotos);
-      }
+      const fetchedPhotos = await getPhotos({ all_users: true });
+      setAllPhotos(fetchedPhotos);
     };
 
     fetchPhotos();
