@@ -12,8 +12,23 @@ interface PhotoDetailProps {
 
 const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   const [photo, setPhoto] = useState<Photo | null>(initialPhoto);
+  const [imageWidth, setImageWidth] = useState<number>(0);
+  const fixedHeight = 300; // 画像の高さを固定
   const router = useRouter();
   const { id } = router.query;
+
+  const aspectRatio = photo ? photo.height / photo.width : 1;
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      setImageWidth(screenWidth);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [photo, fixedHeight]);
 
   useEffect(() => {
     if (!initialPhoto && id) {
@@ -24,6 +39,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   if (!photo) {
     return <div>Loading...</div>;
   }
+
   console.log("presignedURL:", photo.file_url);
 
   return (
@@ -39,8 +55,8 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
                   : "/path/to/default/avatar.png"
               }
               alt="User avatar"
-              width={500}
-              height={300}
+              layout="fill"
+              objectFit="contain"
             />
           </div>
           <div className="py-1 ml-6 text-2xl">
@@ -49,19 +65,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
             </p>
           </div>
         </div>
-        <div className="flex justify-center">
-          <div className="w-1/4">
-            <Image
-              src={photo.file_url}
-              alt="Uploaded photo"
-              className="w-full"
-              width={500}
-              height={300}
-            />
-            <p className="text-gray-500">
-              {new Date(photo.created_at).toLocaleString()}
-            </p>
-          </div>
+        <div className="flex flex-row-reverse justify-center mx-auto max-w-screen-lg">
           <div className="p-4 w-1/4">
             <p className="text-gray-900">カメラ: {photo.camera_model}</p>
             <p className="text-gray-900">ISO: {photo.iso}</p>
@@ -76,6 +80,22 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
                 month: "numeric",
                 day: "numeric",
               })}
+            </p>
+          </div>
+          <div className="w-1/4">
+            <div
+              className="relative"
+              style={{ width: `${100 * aspectRatio}%`, height: fixedHeight }}
+            >
+              <Image
+                src={photo.file_url}
+                alt="Uploaded photo"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+            <p className="            text-gray-500">
+              {new Date(photo.created_at).toLocaleString()}
             </p>
           </div>
         </div>
