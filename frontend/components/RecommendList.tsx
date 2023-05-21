@@ -34,7 +34,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [fixedHeight]);
 
   const toggleModal = (photoId: number) => {
     setShowModal(showModal === photoId ? null : photoId);
@@ -100,7 +100,8 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                       className="absolute top-0 left-0 rounded t-lg"
                       src={photo.file_url}
                       alt="Uploaded photo"
-                      layout="fill"
+                      width={500}
+                      height={300}
                       objectFit="cover"
                       objectPosition="center"
                       priority
@@ -208,7 +209,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       {deleteModalId !== null && (
         <div
           id="popup-modal"
-          tabindex="-1"
+          tabIndex={-1}
           className="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
         >
           <div className="relative w-full max-w-md max-h-full mx-auto">
@@ -283,7 +284,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       {editModalId !== null && (
         <div
           id="edit-modal"
-          tabindex="-1"
+          tabIndex={-1}
           className="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
         >
           <div
@@ -317,16 +318,20 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
               </button>
               <div className="flex flex-col items-center justify-center">
                 {selectedImage ? (
-                  <img
+                  <Image
                     className="max-h-[180px] h-auto max-w-full object-contain my-5"
                     src={URL.createObjectURL(selectedImage)}
                     alt="Selected image"
+                    width={500}
+                    height={300}
                   />
                 ) : (
-                  <img
+                  <Image
                     className="max-h-[180px] h-auto max-w-full object-contain my-5"
                     src="/upload-default.svg"
                     alt="Default image"
+                    width={500}
+                    height={300}
                   />
                 )}
 

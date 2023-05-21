@@ -111,6 +111,8 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             iso: data.iso || 0,
             f_value: data.f_value || 0,
             created_at: data.created_at || "", // 必要に応じて API から返された値をセットする
+            taken_at: data.taken_at,
+            user: data.user,
           };
           onClose();
           onImageUpload(photo);
@@ -179,16 +181,20 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
         </button>
         <div className="flex flex-col items-center justify-center">
           {selectedImage ? (
-            <img
+            <Image
               className="max-h-[180px] h-auto max-w-full object-contain my-5"
               src={URL.createObjectURL(selectedImage)}
               alt="Selected image"
+              width={500}
+              height={300}
             />
           ) : (
-            <img
+            <Image
               className="max-h-[180px] h-auto max-w-full object-contain my-5"
               src="/upload-default.svg"
               alt="Default image"
+              width={500}
+              height={300}
             />
           )}
 

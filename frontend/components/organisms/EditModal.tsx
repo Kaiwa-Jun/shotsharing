@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { updatePhoto } from "../../utils/api/updatePhoto";
 
 interface EditModalProps {
@@ -76,10 +77,12 @@ const EditModal: React.FC<EditModalProps> = ({
           <span className="sr-only">Close modal</span>
         </button>
         <div className="flex flex-col items-center justify-center">
-          <img
+          <Image
             className="max-h-[180px] h-auto max-w-full object-contain my-5"
             src={imageSrc}
             alt="Selected image"
+            width={500}
+            height={300}
           />
 
           <input

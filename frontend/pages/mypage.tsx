@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MypageTab from "@/components/organisms/MypageTab";
-import UserInfo from "../components/organisms/UserInfo
+import UserInfo from "../components/organisms/UserInfo";
 import { Router } from "next/router";
 
 const MyPage: React.FC = () => {

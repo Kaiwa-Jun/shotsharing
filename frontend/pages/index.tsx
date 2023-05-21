@@ -50,8 +50,11 @@ const IndexPage: React.FC = () => {
       setAllPhotos(fetchedPhotos);
     };
 
-    fetchPhotos();
-  }, [user]);
+    if (user) {
+      // ここでuserがnullでないことを確認
+      fetchPhotos();
+    }
+  }, [user]); // 依存配列から setAllPhotos を削除
 
   return (
     <div className="flex flex-col min-h-screen">

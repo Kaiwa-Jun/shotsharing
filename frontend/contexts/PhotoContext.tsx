@@ -7,6 +7,8 @@ import {
 } from "react";
 import { Photo } from "../types/photo"; // Import the Photo type from /types/photo
 
+export type { Photo } from "../types/photo";
+
 type PhotoContextType = {
   photos: Photo[];
   addPhoto: (photo: Photo) => void;

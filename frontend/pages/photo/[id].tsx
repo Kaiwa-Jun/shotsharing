@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getPhotoById } from "../../utils/api";
 import { Photo } from "../../types/photo";
 import HeroSection from "../../components/organisms/HeroSection";
+import Image from "next/image";
 
 interface PhotoDetailProps {
   initialPhoto: Photo | null;
@@ -31,13 +32,15 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
       <div className="my-7">
         <div className="flex items-center justify-center my-5">
           <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-            <img
+            <Image
               src={
                 photo.user && photo.user.avatar_url
                   ? photo.user.avatar_url
                   : "/path/to/default/avatar.png"
               }
               alt="User avatar"
+              width={500}
+              height={300}
             />
           </div>
           <div className="py-1 ml-6 text-2xl">
@@ -48,7 +51,13 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
         </div>
         <div className="flex justify-center">
           <div className="w-1/4">
-            <img src={photo.file_url} alt="Uploaded photo" className="w-full" />
+            <Image
+              src={photo.file_url}
+              alt="Uploaded photo"
+              className="w-full"
+              width={500}
+              height={300}
+            />
             <p className="text-gray-500">
               {new Date(photo.created_at).toLocaleString()}
             </p>

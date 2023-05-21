@@ -3,7 +3,7 @@ import React from "react";
 interface PhotoModalProps {
   showModal: number | null;
   photoId: number;
-  toggleModal: (photoId: number) => void;
+  toggleModal: (photoId: number | null) => void;
   setDeleteModalId: (photoId: number | null) => void;
   setEditModalId: (photoId: number | null) => void;
 }
