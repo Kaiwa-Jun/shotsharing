@@ -54,7 +54,8 @@ const Header: React.FC = () => {
           <Link href="/">
             <div className="flex items-center cursor-pointer">
               <Image
-                src="https://flowbite.com/docs/images/logo.svg"
+                // src="https://flowbite.com/docs/images/logo.svg"
+                src="/logo.svg"
                 className="mr-3 h-6 sm:h-9"
                 alt="Flowbite Logo"
                 width={50}

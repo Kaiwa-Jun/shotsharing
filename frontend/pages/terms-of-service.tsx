@@ -234,7 +234,7 @@ const TermsOfService: React.FC = () => {
               <p className="max-w-4xl my-2  list-disc list-inside pl-4 text-sm">
                 以上
                 <br />
-                2023年4月16日 制定
+                2023年5月28日 制定
               </p>
             </div>
           </div>

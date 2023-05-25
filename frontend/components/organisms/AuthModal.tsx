@@ -56,7 +56,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         <div className="flex flex-col items-center justify-center my-14">
           <Link href="/" className="flex items-center">
             <Image
-              src="https://flowbite.com/docs/images/logo.svg"
+              src="/logo.svg"
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
               width={50}
