@@ -15,6 +15,6 @@ export interface Photo {
     display_name: string;
     avatar_url: string | null;
   };
-  height: number;
-  width: number;
+  height?: number;
+  width?: number;
 }

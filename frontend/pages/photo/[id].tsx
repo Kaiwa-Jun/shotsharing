@@ -17,7 +17,8 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   const router = useRouter();
   const { id } = router.query;
 
-  const aspectRatio = photo ? photo.height / photo.width : 1;
+  const aspectRatio =
+    photo && photo.height && photo.width ? photo.height / photo.width : 1;
 
   useEffect(() => {
     const handleResize = () => {
