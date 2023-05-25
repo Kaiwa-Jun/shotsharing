@@ -15,7 +15,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             <div className="mb-6 md:mb-0">
               <Link href="https://flowbite.com/" className="flex items-center">
                 <Image
-                  src="https://flowbite.com/docs/images/logo.svg"
+                  src="/logo.svg"
                   className="mr-3 h-6 sm:h-9"
                   alt="Flowbite Logo"
                   width={50}
