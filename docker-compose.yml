@@ -1,5 +1,10 @@
 version: "3.9"
 services:
+  redis:
+    image: "redis:latest"
+    command: redis-server
+    ports:
+      - "6379:6379"
   backend:
     build: ./backend
     command: rails server -b 0.0.0.0 -p 3002
@@ -10,6 +15,7 @@ services:
       - "3002:3002"
     depends_on:
       - db
+      - redis
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/backend_development
       - POSTGRES_USER=postgres
@@ -17,7 +23,7 @@ services:
       - POSTGRES_DB=backend_development
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-      # - RAILS_MASTER_KEY='config/master.key'
+      - REDIS_URL=redis://redis:6379
   db:
     image: postgres:13
     environment:
