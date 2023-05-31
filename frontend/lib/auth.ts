@@ -19,6 +19,7 @@ const createUserInBackend = async (user: User) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${user.idToken}`, // ヘッダーにトークンを追加
         },
         body: JSON.stringify({ user }),
       }
@@ -41,6 +42,7 @@ export const signInWithGoogle = async (
     const firebaseUser = result.user;
 
     if (firebaseUser) {
+      const idToken = await firebaseUser.getIdToken(true); // IDトークンを取得
       console.log("Firebase user found");
       const userSnapshot = await firebase
         .firestore()
@@ -56,6 +58,7 @@ export const signInWithGoogle = async (
           display_name: firebaseUser.displayName,
           email: firebaseUser.email,
           avatar_url: firebaseUser.photoURL,
+          idToken: idToken, // 取得したIDトークンを追加
         };
 
         await firebase
@@ -68,6 +71,7 @@ export const signInWithGoogle = async (
       } else {
         console.log("User found in Firestore");
         const user: User = userSnapshot.data() as User; // Get user data from the snapshot
+        user.idToken = idToken; // 既存ユーザーでもトークンを更新
         setUser(user); // Set the user data in the UserContext
       }
       console.log("After checking userSnapshot.exists");
