@@ -19,7 +19,7 @@ const createUserInBackend = async (user: User) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.idToken}`, // ヘッダーにトークンを追加
+          Authorization: `Bearer ${user.idToken}`,
         },
         body: JSON.stringify({ user }),
       }
