@@ -58,7 +58,7 @@ export const signInWithGoogle = async (
           display_name: firebaseUser.displayName,
           email: firebaseUser.email,
           avatar_url: firebaseUser.photoURL,
-          idToken: idToken, // 取得したIDトークンを追加
+          idToken: idToken,
         };
 
         await firebase
@@ -66,6 +66,19 @@ export const signInWithGoogle = async (
           .collection("users")
           .doc(firebaseUser.uid)
           .set(newUser);
+
+        console.log("User created in Firestore, checking...");
+        const userCheckSnapshot = await firebase
+          .firestore()
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get();
+
+        if (!userCheckSnapshot.exists) {
+          console.error("Failed to create user in Firestore");
+        } else {
+          console.log("User successfully created in Firestore");
+        }
 
         await createUserInBackend(newUser);
       } else {
