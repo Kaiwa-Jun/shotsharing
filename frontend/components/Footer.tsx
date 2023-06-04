@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
         <div className="mx-auto w-full container p-4 sm:p-6">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
-              <Link href="https://flowbite.com/" className="flex items-center">
+              <Link href="/" className="flex items-center">
                 <Image
                   src="/logo.svg"
                   className="mr-3 h-6 sm:h-9"

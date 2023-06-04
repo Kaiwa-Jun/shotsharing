@@ -180,7 +180,7 @@ const Header: React.FC = () => {
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <Link href="/mypage/profile/edit">
+                            <Link href="/mypage/edit">
                               <div
                                 className={classNames(
                                   active

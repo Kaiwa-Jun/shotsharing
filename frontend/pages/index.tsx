@@ -9,6 +9,7 @@ import PageTab from "../components/organisms/PageTab";
 import { usePhotoContext } from "../contexts/PhotoContext";
 import { getPhotos } from "../utils/api";
 import { PhotoProvider } from "../contexts/PhotoContext";
+import { NextSeo } from "next-seo";
 
 const IndexPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -58,6 +59,27 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <NextSeo
+        title="ShotSharing-カメラ初心者のための画像投稿サービス"
+        description="ShotSharingはカメラ初心者向けの画像共有サービスです。撮影時のカメラの設定値も一緒にシェアできるため、写真撮影のスキルを向上させるのに最適なプラットフォームです。"
+        openGraph={{
+          url: "https://shotsharing.vercel.app/",
+          title: "ShotSharing-カメラ初心者のための画像共有サービス",
+          description:
+            "ShotSharingはカメラ初心者向けの画像共有サービスです。撮影時のカメラの設定値も一緒にシェアできるため、写真撮影のスキルを向上させるのに最適なプラットフォームです。",
+          images: [
+            {
+              url: "https://shotsharing.vercel.app/og-image.jpg",
+              width: 800,
+              height: 600,
+              alt: "ShotSharing-カメラ初心者のための画像共有サービス",
+            },
+          ],
+        }}
+        twitter={{
+          cardType: "summary_large_image",
+        }}
+      />
       <main
         className="flex-grow"
         style={{ minHeight: "150vh", backgroundColor: "white" }}
