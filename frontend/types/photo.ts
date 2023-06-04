@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface Photo {
   id: number;
   file_url: string;
@@ -10,11 +12,7 @@ export interface Photo {
   f_value: number;
   created_at: string;
   taken_at: string;
-  user: {
-    id: number;
-    display_name: string;
-    avatar_url: string | null;
-  };
+  user: User;
   height?: number;
   width?: number;
 }
