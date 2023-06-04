@@ -21,6 +21,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const [imageRatios, setImageRatios] = useState<Record<number, number>>({});
 
   useEffect(() => {
     const handleResize = () => {
@@ -58,6 +59,12 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       : currentDate.getFullYear();
   const nextMonth = (currentDate.getMonth() + 1) % 12;
 
+  const handleImageLoad = (photoId: number, event: any) => {
+    const { naturalWidth, naturalHeight } = event.target;
+    const imageRatio = naturalWidth / naturalHeight;
+    setImageRatios((prev) => ({ ...prev, [photoId]: imageRatio }));
+  };
+
   // console.log("Next Month Year:", nextMonthYear);
   // console.log("Next Month:", nextMonth);
 
@@ -88,7 +95,8 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
             <div
               key={photo.id}
               className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-2"
-              style={{ width: imageWidth }}
+              // style={{ width: imageWidth }}
+              style={{ width: fixedHeight * (imageRatios[photo.id] || 1) }}
             >
               {photo.file_url ? (
                 <a href={`/photo/${photo.id}`}>
@@ -105,6 +113,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                       objectFit="cover"
                       objectPosition="center"
                       priority
+                      onLoad={(event) => handleImageLoad(photo.id, event)} // ここを追加
                     />
                   </div>
                 </a>
