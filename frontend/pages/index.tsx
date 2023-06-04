@@ -61,7 +61,7 @@ const IndexPage: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <NextSeo
         title="ShotSharing-カメラ初心者のための画像投稿サービス"
-        description="This is the home page of our website."
+        description="ShotSharingはカメラ初心者向けの画像共有サービスです。撮影時のカメラの設定値も一緒にシェアできるため、写真撮影のスキルを向上させるのに最適なプラットフォームです。"
         openGraph={{
           url: "https://shotsharing.vercel.app/",
           title: "ShotSharing-カメラ初心者のための画像共有サービス",
@@ -75,6 +75,9 @@ const IndexPage: React.FC = () => {
               alt: "ShotSharing-カメラ初心者のための画像共有サービス",
             },
           ],
+        }}
+        twitter={{
+          cardType: "summary_large_image",
         }}
       />
       <main
