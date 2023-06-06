@@ -1,8 +1,10 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getPhotoById } from "../../utils/api";
+import { getPhotoById, postComment } from "../../utils/api";
+import { getComments } from "../../utils/api";
 import { Photo } from "../../types/photo";
+import { Comment } from "../../types/comment";
 import HeroSection from "../../components/organisms/HeroSection";
 import Image from "next/image";
 
@@ -12,6 +14,8 @@ interface CommentPageProps {
 
 const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
   const [photo, setPhoto] = useState<Photo | null>(initialPhoto);
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<Comment[]>([]);
   const [imageWidth, setImageWidth] = useState<number>(0);
   const fixedHeight = 300; // 画像の高さを固定
   const router = useRouter();
@@ -37,15 +41,18 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
     }
   }, [photoId, initialPhoto]);
 
+  useEffect(() => {
+    if (photo) {
+      getComments(photo.id).then(setComments);
+    }
+  }, [photo]);
+
   if (!photo) {
     return <div>Loading...</div>;
   }
 
-  // ここにコメント投稿フォームを追加します。
-
   return (
     <>
-      <HeroSection />
       <div className="my-7">
         <div className="flex items-center justify-center my-5">
           <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
@@ -101,6 +108,35 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
           </div>
         </div>
       </div>
+
+      {/* ここにコメント内容を表示 */}
+      {comments.map((comment, index) => (
+        <div key={index}>
+          <p>
+            {comment.user.display_name}: {comment.content}
+          </p>
+        </div>
+      ))}
+
+      {/* コメント入力フォーム */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          postComment(comment, photo.id).then((newComment) => {
+            // コメントが投稿された後の処理をここに追加します。
+            // 例えば、コメントのテキストをクリアする、新しいコメントを表示するなど。
+            setComment("");
+            setComments([...comments, newComment]);
+          });
+        }}
+      >
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="コメントを入力..."
+        />
+        <button type="submit">コメントを投稿</button>
+      </form>
     </>
   );
 };

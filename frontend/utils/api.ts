@@ -1,4 +1,5 @@
 import { Photo } from "../types/photo";
+import { Comment } from "../types/comment";
 import axios from "axios";
 
 interface GetPhotosParams {
@@ -40,4 +41,42 @@ export async function getPhotoById(
     console.error(error);
     return null;
   }
+}
+
+export const postComment = async (
+  comment: string,
+  photoId: number
+): Promise<Comment> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/comments`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        comment: {
+          content: comment,
+          photo_id: photoId,
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("コメントの投稿に失敗しました");
+  }
+
+  const data = await response.json();
+  return data;
+};
+
+export async function getComments(photoId: number): Promise<Comment[]> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/comments`
+  );
+  if (!response.ok) {
+    throw new Error("コメントの取得に失敗しました");
+  }
+  return await response.json();
 }

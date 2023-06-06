@@ -5,6 +5,7 @@ export interface Comment {
   content: string;
   created_at: string;
   updated_at: string;
-  user: User;
+  user_id: number;
   photo_id: number;
+  user: User;
 }
