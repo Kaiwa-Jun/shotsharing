@@ -205,13 +205,6 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             onChange={handleImageChange}
           />
 
-          <p
-            className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-            id="file_input_help"
-          >
-            SVG, PNG, JPG or GIF (MAX. 800x400px).
-          </p>
-
           <label className="relative inline-flex items-center cursor-pointer mt-5">
             <input
               type="checkbox"
