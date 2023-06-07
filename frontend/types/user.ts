@@ -3,5 +3,5 @@ export interface User {
   display_name: string | null;
   email: string | null;
   avatar_url: string | null;
-  idToken?: string;
+  idToken: string | null;
 }

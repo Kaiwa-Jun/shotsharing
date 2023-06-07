@@ -43,6 +43,7 @@ export const signInWithGoogle = async (
 
     if (firebaseUser) {
       const idToken = await firebaseUser.getIdToken(true); // IDトークンを取得
+      console.log("idToken", idToken);
       console.log("Firebase user found");
       const userSnapshot = await firebase
         .firestore()
