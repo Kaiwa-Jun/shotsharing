@@ -26,6 +26,9 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const router = useRouter();
   const [imageRatios, setImageRatios] = useState<Record<number, number>>({});
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
+    {}
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -72,16 +75,22 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
         console.log("currentUserId:", user ? user.uid : null);
       });
 
-    photos.forEach(async (photo) => {
-      const comments = await getComments(photo.id);
-      photo.commentCount = comments.length;
-    });
-
-    // Cleanup function
     return () => {
       unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    const fetchCommentCounts = async () => {
+      const counts: Record<number, number> = {};
+      for (const photo of photos) {
+        const comments = await getComments(photo.id);
+        counts[photo.id] = comments.length;
+      }
+      setCommentCounts(counts);
+    };
+    fetchCommentCounts();
+  }, [photos]);
 
   return (
     <div className="flex flex-wrap justify-start items-start">
@@ -166,7 +175,9 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                           </svg>
                         </div>
                         <p className="ml-0">
-                          {photo.commentCount ? photo.commentCount : 0}
+                          {commentCounts[photo.id]
+                            ? commentCounts[photo.id]
+                            : 0}
                         </p>
                       </div>
                     </Link>
