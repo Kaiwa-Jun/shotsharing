@@ -23,19 +23,23 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        const user: User = {
-          firebase_uid: firebaseUser.uid,
-          display_name: firebaseUser.displayName,
-          email: firebaseUser.email,
-          avatar_url: firebaseUser.photoURL,
-        };
-        setUser(user);
-      } else {
-        setUser(null);
+    const unsubscribe = firebaseAuth.onAuthStateChanged(
+      async (firebaseUser) => {
+        if (firebaseUser) {
+          const idToken = await firebaseUser.getIdToken(true); // IDトークンを取得
+          const user: User = {
+            firebase_uid: firebaseUser.uid,
+            display_name: firebaseUser.displayName,
+            email: firebaseUser.email,
+            avatar_url: firebaseUser.photoURL,
+            idToken: idToken, // 追加
+          };
+          setUser(user);
+        } else {
+          setUser(null);
+        }
       }
-    });
+    );
 
     return () => {
       unsubscribe();

@@ -45,7 +45,8 @@ export async function getPhotoById(
 
 export const postComment = async (
   comment: string,
-  photoId: number
+  photoId: number,
+  idToken: string
 ): Promise<Comment> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/comments`,
@@ -53,6 +54,7 @@ export const postComment = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
       },
       body: JSON.stringify({
         comment: {
@@ -62,6 +64,7 @@ export const postComment = async (
       }),
     }
   );
+  console.log("idToken", idToken);
 
   if (!response.ok) {
     throw new Error("コメントの投稿に失敗しました");

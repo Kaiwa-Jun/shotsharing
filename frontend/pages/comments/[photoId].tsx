@@ -7,12 +7,14 @@ import { Photo } from "../../types/photo";
 import { Comment } from "../../types/comment";
 import HeroSection from "../../components/organisms/HeroSection";
 import Image from "next/image";
+import { useAuth } from "../../contexts/UserContext";
 
 interface CommentPageProps {
   initialPhoto: Photo | null;
 }
 
 const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
+  const { user } = useAuth();
   const [photo, setPhoto] = useState<Photo | null>(initialPhoto);
   const [comment, setComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
@@ -43,7 +45,10 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
 
   useEffect(() => {
     if (photo) {
-      getComments(photo.id).then(setComments);
+      getComments(photo.id).then((comments) => {
+        console.log(comments); // ここでAPIのレスポンスをログ出力
+        setComments(comments);
+      });
     }
   }, [photo]);
 
@@ -113,7 +118,8 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
       {comments.map((comment, index) => (
         <div key={index}>
           <p>
-            {comment.user.display_name}: {comment.content}
+            {comment.user ? comment.user.display_name : "Anonymous"}:{" "}
+            {comment.content}
           </p>
         </div>
       ))}
@@ -122,12 +128,16 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          postComment(comment, photo.id).then((newComment) => {
-            // コメントが投稿された後の処理をここに追加します。
-            // 例えば、コメントのテキストをクリアする、新しいコメントを表示するなど。
-            setComment("");
-            setComments([...comments, newComment]);
-          });
+          if (user && user.idToken) {
+            // 追加
+            postComment(comment, photo.id, user.idToken).then((newComment) => {
+              // 修正
+              // コメントが投稿された後の処理をここに追加します。
+              // 例えば、コメントのテキストをクリアする、新しいコメントを表示するなど。
+              setComment("");
+              setComments([...comments, newComment]);
+            });
+          }
         }}
       >
         <textarea
