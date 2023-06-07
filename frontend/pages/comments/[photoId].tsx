@@ -114,39 +114,77 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
         </div>
       </div>
 
-      {/* ここにコメント内容を表示 */}
-      {comments.map((comment, index) => (
-        <div key={index}>
-          <p>
-            {comment.user ? comment.user.display_name : "Anonymous"}:{" "}
-            {comment.content}
-          </p>
-        </div>
-      ))}
+      <div className="flex flex-col items-center justify-center">
+        {/* ここにコメント内容を表示 */}
+        <ul
+          role="list"
+          className="w-full max-w-lg divide-y divide-gray-200 dark:divide-gray-700"
+        >
+          {comments.map((comment, index) => (
+            <li key={index} className="py-3 sm:py-4">
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image
+                    className="w-8 h-8 rounded-full"
+                    src={
+                      comment.user && comment.user.avatar_url
+                        ? comment.user.avatar_url
+                        : "/path/to/default/avatar.png"
+                    }
+                    alt="User avatar"
+                    width={32}
+                    height={32}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                    {comment.user ? comment.user.display_name : "Anonymous"}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                    {comment.content}
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
 
-      {/* コメント入力フォーム */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (user && user.idToken) {
-            // 追加
-            postComment(comment, photo.id, user.idToken).then((newComment) => {
-              // 修正
-              // コメントが投稿された後の処理をここに追加します。
-              // 例えば、コメントのテキストをクリアする、新しいコメントを表示するなど。
-              setComment("");
-              setComments([...comments, newComment]);
-            });
-          }
-        }}
-      >
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="コメントを入力..."
-        />
-        <button type="submit">コメントを投稿</button>
-      </form>
+        {/* コメント入力フォーム */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (user && user.idToken) {
+              postComment(comment, photo.id, user.idToken).then(
+                (newComment) => {
+                  setComment("");
+                  setComments([...comments, newComment]);
+                }
+              );
+            }
+          }}
+          className="w-full max-w-lg flex flex-col my-8"
+        >
+          <div className="mb-2">
+            <textarea
+              id="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="コメントを入力..."
+              required
+              maxLength={30}
+            />
+          </div>
+          <div className="self-end">
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              コメントを投稿
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   );
 };
