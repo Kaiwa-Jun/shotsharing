@@ -15,4 +15,5 @@ export interface Photo {
   user: User;
   height?: number;
   width?: number;
+  commentCount?: number;
 }
