@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Photo } from "../types/photo";
 import firebase from "firebase/compat/app";
 import { getComments } from "../utils/api";
-
+import { createLike, deleteLike, getLike } from "../utils/api";
 interface PhotoListProps {
   photos?: Photo[];
 }
@@ -29,6 +29,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
     {}
   );
+  const [likes, setLikes] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,6 +93,51 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchCommentCounts();
   }, [photos]);
 
+  const handleLike = async (photoId: number) => {
+    if (!currentUserId) return;
+    const idToken = await firebase.auth().currentUser?.getIdToken();
+    if (!idToken) return;
+    try {
+      const like = await createLike(photoId, idToken);
+      console.log("like:", like);
+      setLikes((prevLikes) => ({ ...prevLikes, [photoId]: true }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUnlike = async (photoId: number) => {
+    if (!currentUserId) return;
+    const idToken = await firebase.auth().currentUser?.getIdToken();
+    if (!idToken) return;
+    try {
+      const like = await deleteLike(photoId, idToken);
+      console.log("like:", like);
+      setLikes((prevLikes) => ({ ...prevLikes, [photoId]: false }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!currentUserId) return;
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) return;
+      const likes: Record<number, boolean> = {};
+      for (const photo of photos) {
+        try {
+          const like = await getLike(photo.id, idToken);
+          likes[photo.id] = !!like;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      setLikes(likes);
+    };
+    fetchLikes();
+  }, [photos, currentUserId]);
+
   return (
     <div className="flex flex-wrap justify-start items-start">
       {photos
@@ -139,14 +185,21 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                     <div>No image available</div>
                   )}
                   <div className="relative flex justify-end">
-                    {/* ここにいいねとかのアイコン入れる */}
-                    <div className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer">
+                    {/* いいねアイコン */}
+                    <div
+                      className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer"
+                      onClick={
+                        likes[photo.id]
+                          ? () => handleUnlike(photo.id)
+                          : () => handleLike(photo.id)
+                      }
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
+                        fill={likes[photo.id] ? "red" : "none"} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
-                        stroke="currentColor"
+                        stroke={likes[photo.id] ? "red" : "currentColor"} // いいねされている場合は赤色、されていない場合は現在の色
                         className="w-6 h-6"
                       >
                         <path
@@ -156,6 +209,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         />
                       </svg>
                     </div>
+
                     <Link href={`/comments/${photo.id}`}>
                       <div className="flex items-center mr-2">
                         <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">

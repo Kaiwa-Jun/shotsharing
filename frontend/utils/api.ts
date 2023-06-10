@@ -83,3 +83,66 @@ export async function getComments(photoId: number): Promise<Comment[]> {
   }
   return await response.json();
 }
+
+export const createLike = async (photoId: number, idToken: string) => {
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
+  console.log(url);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  console.log("createLikeのidToken", idToken);
+
+  if (!response.ok) {
+    throw new Error("いいねの送信に失敗しました");
+  }
+  return response.json();
+};
+
+export const deleteLike = async (photoId: number, idToken: string) => {
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
+  console.log(url);
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  console.log("deleteLikeのidToken", idToken);
+
+  if (!response.ok) {
+    throw new Error("いいねの削除に失敗しました");
+  }
+  return response.json();
+};
+
+export async function getLike(
+  photoId: number,
+  idToken: string
+): Promise<boolean> {
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+    if (!response.ok) {
+      if (response.status === 404) {
+        // 404エラーは、いいねが存在しないことを意味するので、falseを返します。
+        return false;
+      }
+      // その他のエラーはエラーメッセージをスローします。
+      throw new Error("Failed to fetch like");
+    }
+    const data = await response.json();
+    return data.length > 0;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
