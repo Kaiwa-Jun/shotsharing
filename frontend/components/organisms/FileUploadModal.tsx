@@ -57,6 +57,8 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
   };
 
   const handlePostButtonClick = async () => {
+    console.log("Current user:", user);
+
     if (selectedImage && user) {
       console.log("user.uid:", user.uid);
 
@@ -91,10 +93,14 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           });
         }
 
+        const idToken = await user.getIdToken(); // JWTを取得
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
           {
             method: "POST",
+            headers: {
+              Authorization: `Bearer ${idToken}`, // JWTを含める
+            },
             body: formData,
           }
         );
