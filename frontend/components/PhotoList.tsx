@@ -93,29 +93,33 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchCommentCounts();
   }, [photos]);
 
-  const handleLike = async (photoId: number) => {
+  const handleLikeClick = async (photoId: number) => {
     if (!currentUserId) return;
     const idToken = await firebase.auth().currentUser?.getIdToken();
     if (!idToken) return;
-    try {
-      const like = await createLike(photoId, idToken);
-      console.log("like:", like);
-      setLikes((prevLikes) => ({ ...prevLikes, [photoId]: true }));
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
-  const handleUnlike = async (photoId: number) => {
-    if (!currentUserId) return;
-    const idToken = await firebase.auth().currentUser?.getIdToken();
-    if (!idToken) return;
     try {
-      const like = await deleteLike(photoId, idToken);
-      console.log("like:", like);
-      setLikes((prevLikes) => ({ ...prevLikes, [photoId]: false }));
+      const likeExists = await getLike(photoId, idToken);
+      console.log(`getLike returned: ${likeExists}`);
+
+      if (likeExists) {
+        await deleteLike(photoId, idToken);
+      } else {
+        await createLike(photoId, idToken);
+        console.log(`Successfully created like for photoId: ${photoId}`);
+      }
+
+      setLikes((prevLikes) => {
+        const updatedLikes = {
+          ...prevLikes,
+          [photoId]: !likeExists,
+        };
+        console.log(`Updated likes state: ${JSON.stringify(updatedLikes)}`);
+        return updatedLikes;
+      });
     } catch (error) {
-      console.error(error);
+      console.error(`Error updating like for photoId: ${photoId}`, error);
+      alert("いいねの更新に失敗しました");
     }
   };
 
@@ -126,14 +130,17 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
       if (!idToken) return;
       const likes: Record<number, boolean> = {};
       for (const photo of photos) {
+        console.log(`Fetching like for photoId: ${photo.id}`);
         try {
-          const like = await getLike(photo.id, idToken);
-          likes[photo.id] = !!like;
+          const likeExists = await getLike(photo.id, idToken);
+          console.log(`getLike returned: ${likeExists}`);
+          likes[photo.id] = likeExists;
         } catch (error) {
           console.error(error);
         }
       }
       setLikes(likes);
+      console.log(likes);
     };
     fetchLikes();
   }, [photos, currentUserId]);
@@ -188,18 +195,17 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                     {/* いいねアイコン */}
                     <div
                       className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer"
-                      onClick={
-                        likes[photo.id]
-                          ? () => handleUnlike(photo.id)
-                          : () => handleLike(photo.id)
-                      }
+                      onClick={() => handleLikeClick(photo.id)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        fill={likes[photo.id] ? "red" : "none"} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
+                        fill={(() => {
+                          console.log(likes[photo.id]); // 追加
+                          return likes[photo.id] ? "red" : "none";
+                        })()} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
+                        stroke={likes[photo.id] ? "red" : "currentColor"}
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
-                        stroke={likes[photo.id] ? "red" : "currentColor"} // いいねされている場合は赤色、されていない場合は現在の色
                         className="w-6 h-6"
                       >
                         <path
