@@ -5,8 +5,13 @@ import { deletePhoto } from "../utils/api/deletePhoto";
 import { useRouter } from "next/router";
 import { Photo } from "../types/photo";
 import firebase from "firebase/compat/app";
-import { getComments } from "../utils/api";
-import { createLike, deleteLike, getLike } from "../utils/api";
+import {
+  createLike,
+  deleteLike,
+  getLike,
+  getComments,
+  getLikesCount,
+} from "../utils/api";
 interface PhotoListProps {
   photos?: Photo[];
 }
@@ -29,6 +34,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
     {}
   );
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [likes, setLikes] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -145,6 +151,26 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchLikes();
   }, [photos, currentUserId]);
 
+  useEffect(() => {
+    console.log(`Photos state: ${JSON.stringify(photos)}`);
+    const fetchLikeCounts = async () => {
+      try {
+        const counts: Record<number, number> = {};
+        const idToken = await firebase.auth().currentUser?.getIdToken();
+        if (!idToken) return;
+        for (const photo of photos) {
+          const likes = await getLikesCount(photo.id, idToken); // いいねの数を取得する関数
+          counts[photo.id] = likes; // 修正: likes.length -> likes
+        }
+        setLikeCounts(counts);
+        console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
+      } catch (error) {
+        console.error(`Error in fetchLikeCounts: ${error}`);
+      }
+    };
+    fetchLikeCounts();
+  }, [photos, likes]); // likesを依存配列に追加
+
   return (
     <div className="flex flex-wrap justify-start items-start">
       {photos
@@ -193,27 +219,32 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                   )}
                   <div className="relative flex justify-end">
                     {/* いいねアイコン */}
-                    <div
-                      className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer"
-                      onClick={() => handleLikeClick(photo.id)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill={(() => {
-                          console.log(likes[photo.id]); // 追加
-                          return likes[photo.id] ? "red" : "none";
-                        })()} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
-                        stroke={likes[photo.id] ? "red" : "currentColor"}
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        className="w-6 h-6"
+                    <div className="flex items-center mr-2">
+                      <div
+                        className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer"
+                        onClick={() => handleLikeClick(photo.id)}
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill={(() => {
+                            console.log(likes[photo.id]); // 追加
+                            return likes[photo.id] ? "red" : "none";
+                          })()} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
+                          stroke={likes[photo.id] ? "red" : "currentColor"}
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="ml-0">
+                        {likeCounts[photo.id] ? likeCounts[photo.id] : 0}
+                      </p>
                     </div>
 
                     <Link href={`/comments/${photo.id}`}>

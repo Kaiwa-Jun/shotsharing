@@ -155,3 +155,26 @@ export const getLikesFromLocalStorage = (photoId: string) => {
   const isLiked = localStorage.getItem(photoId);
   return isLiked ? JSON.parse(isLiked) : false;
 };
+
+export async function getLikesCount(
+  photoId: number,
+  idToken: string
+): Promise<number> {
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch likes count");
+    }
+    const data = await response.json();
+    console.log(`Likes count for photoId ${photoId}: ${data.likes_count}`); // 追加
+    return data.likes_count;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
