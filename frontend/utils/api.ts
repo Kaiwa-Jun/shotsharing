@@ -140,9 +140,18 @@ export async function getLike(
       throw new Error("Failed to fetch like");
     }
     const data = await response.json();
-    return data.length > 0;
+    return data.liked;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
+export const setLikesToLocalStorage = (photoId: string, isLiked: boolean) => {
+  localStorage.setItem(photoId, JSON.stringify(isLiked));
+};
+
+export const getLikesFromLocalStorage = (photoId: string) => {
+  const isLiked = localStorage.getItem(photoId);
+  return isLiked ? JSON.parse(isLiked) : false;
+};
