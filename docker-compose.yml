@@ -24,6 +24,9 @@ services:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
       - REDIS_URL=redis://redis:6379
+      - GOOGLE_APPLICATION_CREDENTIALS=config/shotsharing-login-74a4503f9f0d.json
+      - GOOGLE_CLOUD_PROJECT=shotsharing-login
+      - GOOGLE_CLOUD_KEYFILE_JSON=config/shotsharing-login-74a4503f9f0d.json
   db:
     image: postgres:13
     environment:
