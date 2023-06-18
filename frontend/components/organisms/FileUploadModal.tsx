@@ -2,7 +2,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { User } from "firebase/auth";
-import { Photo } from "../../contexts/PhotoContext";
+// import { Photo } from "../../contexts/PhotoContext";
+import { Photo } from "../../types/photo";
+import firebase from "firebase/compat/app";
 
 type FileUploadModalProps = {
   onClose: () => void;
@@ -16,18 +18,45 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
   const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [locationEnabled, setLocationEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserToken, setCurrentUserToken] = useState<string | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
+    const user = auth.currentUser;
+    setUser(user);
+    setCurrentUser(user);
+  }, []);
 
-    // Clean up the subscription when the component is unmounted
+  useEffect(() => {
+    const unsubscribe = firebase
+      .auth()
+      .onAuthStateChanged((user: firebase.User | null) => {
+        setCurrentUserId(user ? user.uid : null);
+        console.log("currentUserId:", user ? user.uid : null);
+      });
+
     return () => {
       unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      const fetchToken = async () => {
+        const token = await user.getIdToken();
+        setCurrentUserToken(token);
+      };
+      fetchToken();
+    }
+  }, [user]);
 
   const dataURLtoBlob = (dataurl: string) => {
     const arr = dataurl.split(",");
@@ -43,7 +72,9 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("Selected file:", file);
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (event: ProgressEvent<FileReader>) => {
@@ -57,82 +88,60 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
   };
 
   const handlePostButtonClick = async () => {
+    console.log("Selected file:", selectedFile);
     console.log("Current user:", user);
+    console.log("Current location:", currentLocation);
+    console.log("Current user token:", currentUserToken);
+    setIsLoading(true);
 
-    if (selectedImage && user) {
-      console.log("user.uid:", user.uid);
+    if (selectedFile && user) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      formData.append("user_id", user.uid);
+      if (currentLocation) {
+        formData.append("latitude", String(currentLocation.latitude));
+        formData.append("longitude", String(currentLocation.longitude));
+      }
 
-      try {
-        const formData = new FormData();
-        formData.append("image", selectedImage);
-        formData.append("user_id", user.uid);
-        formData.append("location_enabled", String(locationEnabled));
-
-        if (locationEnabled) {
-          await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                formData.append("latitude", String(position.coords.latitude));
-                formData.append("longitude", String(position.coords.longitude));
-                resolve(null);
-              },
-              (error) => {
-                console.error("Error getting location:", error);
-                if (error.code === error.PERMISSION_DENIED) {
-                  alert(
-                    "位置情報へのアクセスが許可されていません。設定を確認してください。"
-                  );
-                } else {
-                  alert(
-                    "位置情報を取得できませんでした。もう一度お試しください。"
-                  );
-                }
-                reject(error);
-              }
-            );
-          });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentUserToken}`,
+          },
+          body: formData,
         }
+      );
 
-        const idToken = await user.getIdToken(); // JWTを取得
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${idToken}`, // JWTを含める
-            },
-            body: formData,
-          }
-        );
-        const data = await response.json();
-        if (response.status >= 200 && response.status < 300 && data.url) {
-          const photo: Photo = {
-            id: data.id,
-            file_url: data.url,
-            image_blob: {
-              filename: data.filename, // 必要に応じて API から返された値をセットする
-            },
-            camera_model: data.camera_model || "",
-            shutter_speed: data.shutter_speed || "",
-            iso: data.iso || 0,
-            f_value: data.f_value || 0,
-            created_at: data.created_at || "", // 必要に応じて API から返された値をセットする
-            taken_at: data.taken_at,
-            user: data.user,
-          };
-          onClose();
-          onImageUpload(photo);
-        } else {
-          console.log("Error response:", response);
-          console.log("Error data:", data);
-          alert("アップロードに失敗しました。もう一度お試しください。");
-        }
-      } catch (error) {
-        // Handle the error
-        alert("アップロード中にエラーが発生しました。もう一度お試しください。");
+      const data = await response.json();
+
+      if (response.ok) {
+        const photo: Photo = {
+          id: data.id,
+          file_url: data.url,
+          image_blob: {
+            filename: data.filename,
+          },
+          camera_model: data.camera_model || "",
+          shutter_speed: data.shutter_speed || "",
+          iso: data.iso || 0,
+          f_value: data.f_value || 0,
+          created_at: data.created_at || "",
+          taken_at: data.taken_at,
+          user: data.user,
+          categories: data.categories,
+        };
+        onImageUpload(photo);
+        setIsLoading(false);
+        onClose();
+      } else {
+        console.error(data);
+        setIsLoading(false);
       }
     } else {
-      alert("ログインしていないため、投稿できません。");
+      console.error("File or user is missing");
+      setIsLoading(false);
     }
   };
 

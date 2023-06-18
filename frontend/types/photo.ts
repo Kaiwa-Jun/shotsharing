@@ -16,4 +16,5 @@ export interface Photo {
   height?: number;
   width?: number;
   commentCount?: number;
+  categories: any[];
 }

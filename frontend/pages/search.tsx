@@ -26,14 +26,21 @@ const Search: React.FC = () => {
     };
   }, []);
 
-    const handleSearch = async () => {
-      const results = await fetchSearchResults(keyword);
-      setSearchResults(results);
-    };
+  const handleSearch = async () => {
+    const results = await fetchSearchResults(keyword);
+    setSearchResults(results);
+  };
 
   useEffect(() => {
     if (keyword) {
-      fetchSearchResults(keyword).then((results) => setSearchResults(results));
+      fetchSearchResults(keyword).then((results) => {
+        const uniqueResults = Array.from(
+          results
+            .reduce((map, result) => map.set(result.id, result), new Map())
+            .values()
+        );
+        setSearchResults(uniqueResults);
+      });
     }
   }, [keyword]);
 

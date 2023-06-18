@@ -183,38 +183,9 @@ export async function getLikesCount(
 export async function fetchSearchResults(
   keyword: string
 ): Promise<SearchResult[]> {
-  // ここでAPIからデータを取得します
-  // この例では、仮のデータを返します
-  return [
-    {
-      id: 1,
-      user_id: 1,
-      file_url:
-        "https://fastly.picsum.photos/id/242/200/300.jpg?hmac=_v7qaiV_fwDB3NP9lpirq7rMvS10u8lHjqMYNmmXya4",
-      iso: 100,
-      shutter_speed: 1.5,
-      f_value: 2.8,
-      camera_model: "Canon EOS 5D Mark IV",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      location_enabled: true,
-      taken_at: "2023-06-03T00:00:00Z",
-      created_at: "2023-06-03T00:00:00Z",
-      updated_at: "2023-06-03T00:00:00Z",
-      categories: [
-        {
-          id: 1,
-          name: "Landscape",
-          created_at: "2023-06-03T00:00:00Z",
-          updated_at: "2023-06-03T00:00:00Z",
-        },
-        {
-          id: 2,
-          name: "City",
-          created_at: "2023-06-03T00:00:00Z",
-          updated_at: "2023-06-03T00:00:00Z",
-        },
-      ],
-    },
-  ];
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/search?keyword=${keyword}`
+  );
+  const data = await response.json();
+  return data;
 }

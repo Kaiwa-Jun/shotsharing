@@ -63,7 +63,7 @@ const SearchResultList: React.FC<Props> = ({ searchResults }) => {
             <p className="text-gray-900">
               Categories:
               {result.categories.map((category) => (
-                <span key={category.id}> {category.name}</span>
+                <span key={category.id}> {category.japanese_name}</span>
               ))}
             </p>
           </div>
