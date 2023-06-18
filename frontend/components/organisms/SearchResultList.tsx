@@ -29,7 +29,7 @@ const SearchResultList: React.FC<Props> = ({ searchResults }) => {
           className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-2"
         >
           <div className="relative rounded-t-lg">
-            <Link href={`/photos/${result.id}`}>
+            <Link href={`/photo/${result.id}`}>
               <Image
                 className="rounded-t-lg"
                 src={result.file_url}
@@ -61,9 +61,14 @@ const SearchResultList: React.FC<Props> = ({ searchResults }) => {
               })}
             </p>
             <p className="text-gray-900">
-              Categories:
               {result.categories.map((category) => (
-                <span key={category.id}> {category.japanese_name}</span>
+                <span
+                  key={category.id}
+                  className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                >
+                  {" "}
+                  {category.japanese_name}
+                </span>
               ))}
             </p>
           </div>
