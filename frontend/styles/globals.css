@@ -108,3 +108,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.linear-gradient {
+  background: linear-gradient(150deg, #1d9cf2c9, #cf3ff84a);
+}
