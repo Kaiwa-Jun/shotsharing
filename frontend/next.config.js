@@ -5,6 +5,7 @@ module.exports = {
       "lh3.googleusercontent.com",
       "shotsharing.s3.ap-northeast-1.amazonaws.com",
       "localhost",
+      "fastly.picsum.photos",
     ],
   },
   async rewrites() {

@@ -1,5 +1,6 @@
 import { Photo } from "../types/photo";
 import { Comment } from "../types/comment";
+import { SearchResult } from "../types/searchResult";
 import axios from "axios";
 
 interface GetPhotosParams {
@@ -177,4 +178,14 @@ export async function getLikesCount(
     console.error(error);
     throw error;
   }
+}
+
+export async function fetchSearchResults(
+  keyword: string
+): Promise<SearchResult[]> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/search?keyword=${keyword}`
+  );
+  const data = await response.json();
+  return data;
 }
