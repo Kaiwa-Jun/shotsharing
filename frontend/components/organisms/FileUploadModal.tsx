@@ -196,7 +196,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             </svg>
             <span className="sr-only">Loading...</span>
           </div>
-          <p className="mt-2 text-gray-500">Now loading...</p>
+          <p className="mt-2 text-gray-500">画像をアップロード中です</p>
         </div>
       ) : (
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
