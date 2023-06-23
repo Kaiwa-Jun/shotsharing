@@ -49,7 +49,10 @@ const Header: React.FC = () => {
 
   return (
     <header>
-      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:text-white">
+      <nav
+        className="fixed w-full z-10 bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:text-white"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.5)" }}
+      >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link href="/">
             <div className="flex items-center cursor-pointer">
