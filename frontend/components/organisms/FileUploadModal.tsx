@@ -98,9 +98,14 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
       const formData = new FormData();
       formData.append("image", selectedFile);
       formData.append("user_id", user.uid);
-      if (currentLocation) {
+      formData.append("location_enabled", String(locationEnabled));
+      if (locationEnabled && currentLocation) {
         formData.append("latitude", String(currentLocation.latitude));
         formData.append("longitude", String(currentLocation.longitude));
+
+        console.log("latitude:", currentLocation.latitude);
+        console.log("longitude:", currentLocation.longitude);
+        console.log("location_enabled:", locationEnabled);
       }
 
       const response = await fetch(
@@ -131,6 +136,9 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           taken_at: data.taken_at,
           user: data.user,
           categories: data.categories,
+          location_enabled: data.location_enabled,
+          latitude: data.latitude || null,
+          longitude: data.longitude || null,
         };
         onImageUpload(photo);
         setIsLoading(false);
