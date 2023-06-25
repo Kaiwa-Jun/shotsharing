@@ -3,7 +3,12 @@ import Image from "next/image";
 const HeroSection = () => {
   return (
     <>
-      <div className="hero-section">
+      <div
+        className="hero-section"
+        style={{
+          marginTop: "75px",
+        }}
+      >
         <section className="linear-gradient dark:bg-gradient-linear">
           <div className="grid max-w-screen-xl px-24 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-0 lg:grid-cols-10">
             <div className="mr-auto place-self-center lg:col-span-6">

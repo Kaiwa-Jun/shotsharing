@@ -82,13 +82,13 @@ const IndexPage: React.FC = () => {
         className="flex-grow"
         style={{ minHeight: "150vh", backgroundColor: "white" }}
       >
-        <div
+        {/* <div
           style={{
             marginTop: "65px",
           }}
-        >
-          <HeroSection />
-        </div>
+        > */}
+        <HeroSection />
+        {/* </div> */}
         <PageTab />
       </main>
     </div>
