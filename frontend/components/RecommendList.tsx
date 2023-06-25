@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { deletePhoto } from "../utils/api/deletePhoto";
 import { useRouter } from "next/router";
 import { Photo } from "../types/photo";
 import firebase from "firebase/compat/app";
-import Link from "next/link";
+import {
+  createLike,
+  deleteLike,
+  getLike,
+  getComments,
+  getLikesCount,
+} from "../utils/api";
 
 interface RecommendListProps {
   photos?: Photo[];
@@ -25,6 +32,11 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
   const router = useRouter();
   const [imageRatios, setImageRatios] = useState<Record<number, number>>({});
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
+    {}
+  );
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  const [likes, setLikes] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,9 +72,9 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         setCurrentUserId(user ? user.uid : null);
+        console.log("currentUserId:", user ? user.uid : null);
       });
 
-    // Cleanup function
     return () => {
       unsubscribe();
     };
@@ -81,8 +93,95 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
     setImageRatios((prev) => ({ ...prev, [photoId]: imageRatio }));
   };
 
-  // console.log("Next Month Year:", nextMonthYear);
-  // console.log("Next Month:", nextMonth);
+  useEffect(() => {
+    const fetchCommentCounts = async () => {
+      const counts: Record<number, number> = {};
+      for (const photo of photos) {
+        const comments = await getComments(photo.id);
+        counts[photo.id] = comments.length;
+      }
+      setCommentCounts(counts);
+    };
+    fetchCommentCounts();
+  }, [photos]);
+
+  const handleLikeClick = async (photoId: number) => {
+    if (!currentUserId) return;
+    const idToken = await firebase.auth().currentUser?.getIdToken();
+    if (!idToken) return;
+
+    try {
+      const likeExists = await getLike(photoId, idToken);
+      console.log(`getLike returned: ${likeExists}`);
+
+      if (likeExists) {
+        await deleteLike(photoId, idToken);
+      } else {
+        await createLike(photoId, idToken);
+        console.log(`Successfully created like for photoId: ${photoId}`);
+      }
+
+      setLikes((prevLikes) => {
+        const updatedLikes = {
+          ...prevLikes,
+          [photoId]: !likeExists,
+        };
+        console.log(`Updated likes state: ${JSON.stringify(updatedLikes)}`);
+        return updatedLikes;
+      });
+    } catch (error) {
+      console.error(`Error updating like for photoId: ${photoId}`, error);
+      alert("いいねの更新に失敗しました");
+    }
+  };
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!currentUserId) return;
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) return;
+      const likes: Record<number, boolean> = {};
+      for (const photo of photos) {
+        console.log(`Fetching like for photoId: ${photo.id}`);
+        try {
+          const likeExists = await getLike(photo.id, idToken);
+          console.log(`getLike returned: ${likeExists}`);
+          likes[photo.id] = likeExists;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      setLikes(likes);
+      console.log(likes);
+    };
+    fetchLikes();
+  }, [photos, currentUserId]);
+
+  useEffect(() => {
+    console.log(`Photos state: ${JSON.stringify(photos)}`);
+    const fetchLikeCounts = async () => {
+      try {
+        const counts: Record<number, number> = {};
+        const idToken = await firebase.auth().currentUser?.getIdToken();
+        if (!idToken) return;
+        for (const photo of photos) {
+          const likes = await getLikesCount(photo.id, idToken); // いいねの数を取得する関数
+          counts[photo.id] = likes; // 修正: likes.length -> likes
+        }
+        setLikeCounts(counts);
+        console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
+      } catch (error) {
+        console.error(`Error in fetchLikeCounts: ${error}`);
+      }
+    };
+    fetchLikeCounts();
+  }, [photos, likes]); // likesを依存配列に追加
+
+  useEffect(() => {
+    photos.forEach((photo) => {
+      console.log("photo.location_enabled:", photo.location_enabled);
+    });
+  }, [photos]);
 
   return (
     <div className="flex flex-wrap justify-start items-start">
@@ -119,7 +218,6 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                 <div
                   key={photo.id}
                   className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-2"
-                  // style={{ width: imageWidth }}
                   style={{ width: fixedHeight * (imageRatios[photo.id] || 1) }}
                 >
                   {photo.file_url ? (
@@ -145,23 +243,36 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                     <div>No image available</div>
                   )}
                   <div className="relative flex justify-end">
-                    {/* ここにいいねとかのアイコン入れる */}
-                    <div className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        className="w-6 h-6"
+                    {/* いいねとかのアイコン */}
+                    <div className="flex items-center mr-2">
+                      <div
+                        className="bg-white rounded-full w-8 h-8 mr-2 flex items-center justify-center cursor-pointer"
+                        onClick={() => handleLikeClick(photo.id)}
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill={(() => {
+                            console.log(likes[photo.id]);
+                            return likes[photo.id] ? "red" : "none";
+                          })()}
+                          stroke={likes[photo.id] ? "red" : "currentColor"}
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="ml-0">
+                        {likeCounts[photo.id] ? likeCounts[photo.id] : 0}
+                      </p>
                     </div>
+
+                    {/* コメントアイコン */}
                     <Link href={`/comments/${photo.id}`}>
                       <div className="flex items-center mr-2">
                         <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
@@ -181,11 +292,45 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                           </svg>
                         </div>
                         <p className="ml-0">
-                          {photo.commentCount ? photo.commentCount : 0}
+                          {commentCounts[photo.id]
+                            ? commentCounts[photo.id]
+                            : 0}
                         </p>
                       </div>
                     </Link>
 
+                    {
+                      /* マップアイコン */
+                      photo.location_enabled && (
+                        <Link href={`/photo/${photo.id}`}>
+                          <div className="flex items-center mr-2">
+                            <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    }
+
+                    {/* モーダル */}
                     {photo.user &&
                       photo.user.firebase_uid === currentUserId && (
                         <div
