@@ -17,4 +17,7 @@ export interface Photo {
   width?: number;
   commentCount?: number;
   categories: any[];
+  location_enabled: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }

@@ -171,6 +171,12 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchLikeCounts();
   }, [photos, likes]); // likesを依存配列に追加
 
+  useEffect(() => {
+    photos.forEach((photo) => {
+      console.log("photo.location_enabled:", photo.location_enabled);
+    });
+  }, [photos]);
+
   return (
     <div className="flex flex-wrap justify-start items-start">
       {photos
@@ -227,9 +233,9 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill={(() => {
-                            console.log(likes[photo.id]); // 追加
+                            console.log(likes[photo.id]);
                             return likes[photo.id] ? "red" : "none";
-                          })()} // いいねされている場合は赤色、されていない場合は塗りつぶしなし
+                          })()}
                           stroke={likes[photo.id] ? "red" : "currentColor"}
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
@@ -247,6 +253,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       </p>
                     </div>
 
+                    {/* コメントアイコン */}
                     <Link href={`/comments/${photo.id}`}>
                       <div className="flex items-center mr-2">
                         <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
@@ -273,6 +280,38 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       </div>
                     </Link>
 
+                    {
+                      /* マップアイコン */
+                      photo.location_enabled && (
+                        <Link href={`/photo/${photo.id}`}>
+                          <div className="flex items-center mr-2">
+                            <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    }
+
+                    {/* モーダル */}
                     {photo.user &&
                       photo.user.firebase_uid === currentUserId && (
                         <div
