@@ -172,7 +172,7 @@ export async function getLikesCount(
       throw new Error("Failed to fetch likes count");
     }
     const data = await response.json();
-    console.log(`Likes count for photoId ${photoId}: ${data.likes_count}`); // 追加
+    console.log(`Likes count for photoId ${photoId}: ${data.likes_count}`);
     return data.likes_count;
   } catch (error) {
     console.error(error);

@@ -178,7 +178,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   }, [photos]);
 
   return (
-    <div className="flex flex-wrap justify-start items-start">
+    <div className="flex flex-wrap justify-center items-start">
       {photos
         .sort(
           (a: Photo, b: Photo) =>
@@ -280,9 +280,8 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       </div>
                     </Link>
 
-                    {
-                      /* マップアイコン */
-                      photo.location_enabled && (
+                    {/* 位置情報アイコン */}
+                    {/* photo.location_enabled && (
                         <Link href={`/photo/${photo.id}`}>
                           <div className="flex items-center mr-2">
                             <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
@@ -308,8 +307,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                             </div>
                           </div>
                         </Link>
-                      )
-                    }
+                      ) */}
 
                     {/* モーダル */}
                     {photo.user &&

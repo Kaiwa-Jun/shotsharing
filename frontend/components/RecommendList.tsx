@@ -184,7 +184,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
   }, [photos]);
 
   return (
-    <div className="flex flex-wrap justify-start items-start">
+    <div className="flex flex-wrap justify-center items-start">
       {photos
         .filter((photo: Photo) => {
           if (!photo) return false;
@@ -235,7 +235,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                           objectFit="cover"
                           objectPosition="center"
                           priority
-                          onLoad={(event) => handleImageLoad(photo.id, event)} // ここを追加
+                          onLoad={(event) => handleImageLoad(photo.id, event)}
                         />
                       </div>
                     </a>
@@ -299,9 +299,8 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                       </div>
                     </Link>
 
-                    {
-                      /* マップアイコン */
-                      photo.location_enabled && (
+                    {/* 位置情報アイコン */}
+                    {/* photo.location_enabled && (
                         <Link href={`/photo/${photo.id}`}>
                           <div className="flex items-center mr-2">
                             <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
@@ -327,8 +326,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                             </div>
                           </div>
                         </Link>
-                      )
-                    }
+                      ) */}
 
                     {/* モーダル */}
                     {photo.user &&

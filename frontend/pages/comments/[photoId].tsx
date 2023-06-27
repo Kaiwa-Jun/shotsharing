@@ -58,7 +58,7 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
 
   return (
     <>
-      <div className="my-7">
+      <div className="my-20">
         <div className="flex items-center justify-center my-5">
           <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
             <Image
