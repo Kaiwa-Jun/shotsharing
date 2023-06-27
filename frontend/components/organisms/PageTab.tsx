@@ -1,7 +1,9 @@
-import { useState } from "react";
-import PhotoList from "../PhotoList";
+import { useState, Suspense } from "react";
+import loadable from "@loadable/component";
 import RecommendList from "../RecommendList";
 import { usePhotoContext } from "../../contexts/PhotoContext";
+
+const PhotoList = loadable(() => import("../PhotoList"));
 
 const PageTab = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -63,7 +65,9 @@ const PageTab = () => {
               aria-labelledby="profile-tab"
             >
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                <PhotoList photos={photos} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <PhotoList photos={photos} />
+                </Suspense>
               </div>
             </div>
             <div

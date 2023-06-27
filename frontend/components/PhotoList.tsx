@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import loadable from "@loadable/component";
+import { createConsumer } from "@rails/actioncable";
+import ActionCable from "actioncable";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { deletePhoto } from "../utils/api/deletePhoto";
@@ -14,6 +18,12 @@ import {
 } from "../utils/api";
 interface PhotoListProps {
   photos?: Photo[];
+}
+
+interface Module {
+  default: {
+    createConsumer: (url: string) => any;
+  };
 }
 
 function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
@@ -36,6 +46,42 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   );
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [likes, setLikes] = useState<Record<number, boolean>>({});
+  const [cable, setCable] = useState<any>(null);
+  const LoadableActionCable = loadable(() => import("@rails/actioncable"));
+
+  interface LikeData {
+    photo_id: number;
+    likes_count: number;
+  }
+
+  const ActionCable = dynamic(() => import("@rails/actioncable"), {
+    ssr: false,
+  });
+
+  useEffect(() => {
+    const cable = createConsumer(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
+    );
+    setCable(cable);
+  }, []);
+
+  useEffect(() => {
+    if (!cable) return;
+
+    const subscription = cable.subscriptions.create("LikesChannel", {
+      received: (data: LikeData) => {
+        if (data.photo_id in likes) {
+          setLikeCounts((prev) => ({
+            ...prev,
+            [data.photo_id]: data.likes_count,
+          }));
+        }
+      },
+    });
+    return () => {
+      cable.subscriptions.remove(subscription);
+    };
+  }, [cable, likes]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -176,6 +222,26 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
       console.log("photo.location_enabled:", photo.location_enabled);
     });
   }, [photos]);
+
+  function MyComponent() {
+    const [ActionCable, setActionCable] = useState<Module | null>(null);
+
+    useEffect(() => {
+      LoadableActionCable.load().then((module: Module) => {
+        setActionCable(module);
+      });
+    }, []); // LoadableActionCableを依存配列から削除
+
+    useEffect(() => {
+      if (ActionCable) {
+        const cable = ActionCable.default.createConsumer(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
+        );
+        // ここでcableを使用する
+      }
+    }, [ActionCable]);
+    return <div>My Component</div>;
+  }
 
   return (
     <div className="flex flex-wrap justify-center items-start">
