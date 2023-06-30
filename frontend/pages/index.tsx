@@ -47,13 +47,16 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     // API から写真を取得して、PhotoContext のステートを更新する
     const fetchPhotos = async () => {
-      const fetchedPhotos = await getPhotos({ all_users: true });
-      setAllPhotos(fetchedPhotos);
+      if (typeof window !== "undefined") {
+        // 追加
+        const fetchedPhotos = await getPhotos({ all_users: true });
+        setAllPhotos(fetchedPhotos);
+      }
     };
 
     // ここでuserがnullでないことを確認
     fetchPhotos();
-  }, [setAllPhotos]); // 依存配列から setAllPhotos を削除
+  }, [setAllPhotos]); // 依存配列に setAllPhotos を追加
 
   return (
     <div className="flex flex-col min-h-screen">
