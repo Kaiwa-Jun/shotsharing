@@ -16,12 +16,12 @@ module.exports = {
       },
     ];
   },
-  webpackDevMiddleware: (config) => {
-    // ファイルシステムのポーリングを有効にし、監視間隔を 300 ミリ秒に設定
-    config.watchOptions = {
-      poll: 300,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
+  // webpackDevMiddleware: (config) => {
+  //   // ファイルシステムのポーリングを有効にし、監視間隔を 300 ミリ秒に設定
+  //   config.watchOptions = {
+  //     poll: 300,
+  //     aggregateTimeout: 300,
+  //   };
+  //   return config;
+  // },
 };

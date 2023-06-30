@@ -54,15 +54,25 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     likes_count: number;
   }
 
+  const createConsumer = dynamic(
+    () => import("@rails/actioncable").then((mod) => mod.createConsumer),
+    { ssr: false }
+  );
+
   const ActionCable = dynamic(() => import("@rails/actioncable"), {
     ssr: false,
   });
 
   useEffect(() => {
-    const cable = createConsumer(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
-    );
-    setCable(cable);
+    if (typeof window !== "undefined") {
+      // クライアントサイドでのみ実行
+      import("@rails/actioncable").then((ActionCable) => {
+        const cable = ActionCable.createConsumer(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
+        );
+        setCable(cable);
+      });
+    }
   }, []);
 
   useEffect(() => {
