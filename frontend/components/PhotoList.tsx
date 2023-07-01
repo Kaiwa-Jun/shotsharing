@@ -400,7 +400,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       )}
                     {showModal === photo.id && (
                       <div className="absolute top-8 right-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow py-2">
-                        <p
+                        {/* <p
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                           // onClick={(event) => {
                           //   event.stopPropagation();
@@ -423,7 +423,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                             />
                           </svg>
                           投稿を編集
-                        </p>
+                        </p> */}
                         <p
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-500 flex items-center"
                           onClick={(event) => {
