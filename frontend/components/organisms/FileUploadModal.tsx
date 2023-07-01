@@ -254,7 +254,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
               onChange={handleImageChange}
             />
 
-            <label className="relative inline-flex items-center cursor-pointer mt-5">
+            {/* <label className="relative inline-flex items-center cursor-pointer mt-5">
               <input
                 type="checkbox"
                 value=""
@@ -266,7 +266,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
               <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                 撮影場所を共有する
               </span>
-            </label>
+            </label> */}
             <div className="flex mt-10">
               <button
                 onClick={handleClose}
