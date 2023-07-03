@@ -2,10 +2,27 @@ import { Photo } from "../types/photo";
 import { Comment } from "../types/comment";
 import { SearchResult } from "../types/searchResult";
 import axios from "axios";
+import { User } from "../types/user";
+import firebase from "firebase/compat";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 
 interface GetPhotosParams {
   firebase_uid: string;
 }
+
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export async function getPhotos({
   firebase_uid,
@@ -179,6 +196,39 @@ export async function getLikesCount(
     throw error;
   }
 }
+
+export const getUserByFirebaseUid = async (firebase_uid: string) => {
+  console.log("getUserByFirebaseUid called with firebase_uid:", firebase_uid);
+  try {
+    const userDoc = await getDoc(doc(db, "users", firebase_uid));
+
+    if (!userDoc.exists()) {
+      throw new Error("User not found");
+    }
+
+    const user: User = userDoc.data() as User;
+    console.log("getUserByFirebaseUid returning user:", user);
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getLikedPhotos = async (firebase_uid: string) => {
+  console.log("getLikedPhotos called with firebase_uid:", firebase_uid);
+  const user = await getUserByFirebaseUid(firebase_uid);
+  console.log("User returned by getUserByFirebaseUid:", user);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/users/${user.firebase_uid}/likes`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch liked photos");
+  }
+  const data = await response.json();
+  console.log("getLikedPhotos returning photos:", data.photos);
+  return data.photos;
+};
 
 export async function fetchSearchResults(
   keyword: string
