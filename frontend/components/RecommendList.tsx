@@ -112,7 +112,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
 
     try {
       const likeExists = await getLike(photoId, idToken);
-      console.log(`getLike returned: ${likeExists}`);
+      // console.log(`getLike returned: ${likeExists}`);
 
       if (likeExists) {
         await deleteLike(photoId, idToken);
@@ -145,7 +145,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
         console.log(`Fetching like for photoId: ${photo.id}`);
         try {
           const likeExists = await getLike(photo.id, idToken);
-          console.log(`getLike returned: ${likeExists}`);
+          // console.log(`getLike returned: ${likeExists}`);
           likes[photo.id] = likeExists;
         } catch (error) {
           console.error(error);
@@ -169,7 +169,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
           counts[photo.id] = likes; // 修正: likes.length -> likes
         }
         setLikeCounts(counts);
-        console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
+        // console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
       } catch (error) {
         console.error(`Error in fetchLikeCounts: ${error}`);
       }
