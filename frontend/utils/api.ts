@@ -33,6 +33,7 @@ export async function getPhotos({
 }): Promise<Photo[]> {
   let url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`;
 
+  // パラメータがセットされている場合のみURLに追加
   if (firebase_uid) {
     url += `?firebase_uid=${firebase_uid}`;
   } else if (all_users) {
@@ -44,7 +45,12 @@ export async function getPhotos({
   if (!response.ok) {
     throw new Error("Failed to fetch photos");
   }
-  return await response.json();
+
+  // データをロギング
+  const data = await response.json();
+  console.log("Fetched data:", data);
+
+  return data;
 }
 
 export async function getPhotoById(
