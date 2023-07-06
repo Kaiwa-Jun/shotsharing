@@ -183,7 +183,7 @@ const Header: React.FC = () => {
                           )}
                         </Menu.Item>
                       </div>
-                      <div>
+                      {/* <div>
                         <Menu.Item>
                           {({ active }) => (
                             <Link href="/mypage/edit">
@@ -200,11 +200,11 @@ const Header: React.FC = () => {
                             </Link>
                           )}
                         </Menu.Item>
-                      </div>
-                      {/* <div>
+                      </div> */}
+                      <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="/mypage/likes"
                               className={classNames(
                                 active
@@ -214,14 +214,14 @@ const Header: React.FC = () => {
                               )}
                             >
                               いいねした投稿
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
                       <div>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href="/mypage/comments"
                               className={classNames(
                                 active
@@ -231,11 +231,11 @@ const Header: React.FC = () => {
                               )}
                             >
                               コメントした投稿
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </div>
-                      <div className="py-1">
+                      {/* <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
                             <a
