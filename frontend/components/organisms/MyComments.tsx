@@ -4,6 +4,7 @@ import { Photo } from "../../types/photo";
 import { getMyComments, getPhotoById } from "../../utils/api";
 import Image from "next/image";
 import { useAuth } from "../../contexts/UserContext";
+import Link from "next/link";
 
 interface CommentWithPhoto extends Comment {
   photo: Photo | null;
@@ -67,21 +68,26 @@ const MyComments: React.FC = () => {
         <div key={index} className="mt-5">
           <time className="text-lg font-semibold text-gray-900 dark:text-white">
             {group.photo
-              ? new Date(group.photo.created_at).toDateString()
+              ? new Date(group.photo.created_at).toLocaleDateString("ja-JP", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })
               : "Unknown Date"}
           </time>
 
           {group.photo ? (
-            // Enclosed Image component within a div to control width
             <div className="w-full">
-              <Image
-                className="h-auto mt-3 mb-3 rounded"
-                src={group.photo.file_url}
-                alt="Grouped photo"
-                layout="responsive"
-                width={1000}
-                height={600}
-              />
+              <Link href={`/photo/${group.photo.id}`}>
+                <Image
+                  className="h-auto mt-3 mb-3 rounded cursor-pointer"
+                  src={group.photo.file_url}
+                  alt="Grouped photo"
+                  layout="responsive"
+                  width={1000}
+                  height={600}
+                />
+              </Link>
             </div>
           ) : (
             <p>No photo available</p>
