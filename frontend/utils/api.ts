@@ -108,6 +108,37 @@ export async function getComments(photoId: number): Promise<Comment[]> {
   return await response.json();
 }
 
+export async function getMyComments(
+  idToken: string,
+  userId: string
+): Promise<Comment[]> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/users/${userId}/comments`,
+    {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("コメントの取得に失敗しました");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+export async function getUserComments(userId: string): Promise<Comment[]> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/users/${userId}/comments`
+  );
+  if (!response.ok) {
+    throw new Error("コメントの取得に失敗しました");
+  }
+  return await response.json();
+}
+
 export const createLike = async (photoId: number, idToken: string) => {
   const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
   console.log(url);
