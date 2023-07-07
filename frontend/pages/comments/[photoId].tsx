@@ -107,9 +107,9 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
                 objectFit="contain"
               />
             </div>
-            <p className="            text-gray-500">
+            {/* <p className="            text-gray-500">
               {new Date(photo.created_at).toLocaleString()}
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
