@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import loadable from "@loadable/component";
-import { createConsumer } from "@rails/actioncable";
-import ActionCable from "actioncable";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,6 +13,11 @@ import {
   getComments,
   getLikesCount,
 } from "../utils/api";
+
+const LoadableActionCable = dynamic(() => import("@rails/actioncable"), {
+  ssr: false,
+}) as any;
+
 interface PhotoListProps {
   photos?: Photo[];
 }
@@ -47,32 +49,21 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [likes, setLikes] = useState<Record<number, boolean>>({});
   const [cable, setCable] = useState<any>(null);
-  const LoadableActionCable = loadable(() => import("@rails/actioncable"));
 
   interface LikeData {
     photo_id: number;
     likes_count: number;
   }
 
-  const createConsumer = dynamic(
-    () => import("@rails/actioncable").then((mod) => mod.createConsumer),
-    { ssr: false }
-  );
-
-  const ActionCable = dynamic(() => import("@rails/actioncable"), {
-    ssr: false,
-  });
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      // クライアントサイドでのみ実行
-      import("@rails/actioncable").then((ActionCable) => {
-        const cable = ActionCable.createConsumer(
-          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
-        );
-        setCable(cable);
-      });
-    }
+    if (!LoadableActionCable.load) return;
+
+    LoadableActionCable.load().then((ActionCable: any) => {
+      const cable = ActionCable.default.createConsumer(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
+      );
+      setCable(cable);
+    });
   }, []);
 
   useEffect(() => {
@@ -240,14 +231,14 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
       LoadableActionCable.load().then((module: Module) => {
         setActionCable(module);
       });
-    }, []); // LoadableActionCableを依存配列から削除
+    }, []);
 
     useEffect(() => {
       if (ActionCable) {
         const cable = ActionCable.default.createConsumer(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT}/cable`
         );
-        // ここでcableを使用する
+        // use cable here
       }
     }, [ActionCable]);
     return <div>My Component</div>;
