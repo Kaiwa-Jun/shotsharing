@@ -266,7 +266,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
                 ? `https://shotsharing.vercel.app/photo/${uploadState.photo.id}`
                 : "https://shotsharing.vercel.app"
             }
-            text="Twitterテスト投稿"
+            text="新しい写真を公開しました！"
             onClose={() => setShowTwitterButton(false)}
           />
         </>
