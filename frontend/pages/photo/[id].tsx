@@ -5,6 +5,7 @@ import { getPhotoById } from "../../utils/api";
 import { Photo } from "../../types/photo";
 import HeroSection from "../../components/organisms/HeroSection";
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 
 interface PhotoDetailProps {
   initialPhoto: Photo | null;
@@ -45,6 +46,36 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
 
   return (
     <>
+      <NextSeo
+        title={`ShotSharing - ${
+          photo.user ? photo.user.display_name : "User's"
+        } Photo`}
+        description={`View this photo taken by ${
+          photo.user ? photo.user.display_name : "User"
+        }`}
+        openGraph={{
+          url: `https://shotsharing.vercel.app/photo/${photo.id}`,
+          title: `ShotSharing - ${
+            photo.user ? photo.user.display_name : "User's"
+          } Photo`,
+          description: `View this photo taken by ${
+            photo.user ? photo.user.display_name : "User"
+          }`,
+          images: [
+            {
+              url: photo.file_url,
+              width: 800,
+              height: 600,
+              alt: `ShotSharing - ${
+                photo.user ? photo.user.display_name : "User's"
+              } Photo`,
+            },
+          ],
+        }}
+        twitter={{
+          cardType: "summary_large_image",
+        }}
+      />
       <HeroSection />
       <div className="my-7">
         <div className="flex items-center justify-center my-5">

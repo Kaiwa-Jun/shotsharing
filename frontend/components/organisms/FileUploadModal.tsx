@@ -127,9 +127,8 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           }
         );
 
-        console.log("fetch called");
-
         const data = await response.json();
+        console.log("Data before creating photo object:", data);
 
         if (response.ok) {
           const photo: Photo = {
@@ -150,6 +149,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             latitude: data.latitude || null,
             longitude: data.longitude || null,
           };
+          console.log("photo object after fetch: ", photo);
           onImageUpload(photo);
           setIsLoading(false);
           console.log("photo:", photo); // photo の内容をログに出力
@@ -261,8 +261,12 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
       ) : showTwitterButton ? (
         <>
           <TwitterShareButton
-            url={uploadState.photo ? uploadState.photo.file_url : ""}
-            text="テストテキスト"
+            url={
+              uploadState.photo?.id
+                ? `https://shotsharing.vercel.app/photo/${uploadState.photo.id}`
+                : "https://shotsharing.vercel.app"
+            }
+            text="Twitterテスト投稿"
             onClose={() => setShowTwitterButton(false)}
           />
         </>
