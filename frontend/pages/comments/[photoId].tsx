@@ -154,12 +154,19 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
           onSubmit={(e) => {
             e.preventDefault();
             if (user && user.idToken) {
-              postComment(comment, photo.id, user.idToken).then(
-                (newComment) => {
-                  setComment("");
-                  setComments([...comments, newComment]);
-                }
-              );
+              // user.display_name や user.avatar_url が null の場合にはデフォルト値を使用
+              const displayName = user.display_name || "Anonymous";
+              const avatarUrl = user.avatar_url || "/default_avatar.svg";
+              postComment(
+                comment,
+                photo.id,
+                user.idToken,
+                displayName,
+                avatarUrl
+              ).then((newComment) => {
+                setComment("");
+                setComments([...comments, newComment]);
+              });
             }
           }}
           className="w-full max-w-lg flex flex-col my-8"

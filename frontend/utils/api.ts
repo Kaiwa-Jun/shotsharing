@@ -70,7 +70,9 @@ export async function getPhotoById(
 export const postComment = async (
   comment: string,
   photoId: number,
-  idToken: string
+  idToken: string,
+  displayName: string,
+  avatarUrl: string
 ): Promise<Comment> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/comments`,
@@ -95,6 +97,11 @@ export const postComment = async (
   }
 
   const data = await response.json();
+  // ユーザー情報を追加
+  data.user = {
+    display_name: displayName,
+    avatar_url: avatarUrl,
+  };
   return data;
 };
 
