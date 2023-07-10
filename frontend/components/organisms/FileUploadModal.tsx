@@ -148,6 +148,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
             location_enabled: data.location_enabled,
             latitude: data.latitude || null,
             longitude: data.longitude || null,
+            exposure_time: data.exposure_time,
           };
           console.log("photo object after fetch: ", photo);
           onImageUpload(photo);
