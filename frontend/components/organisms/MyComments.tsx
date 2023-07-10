@@ -96,7 +96,7 @@ const MyComments: React.FC = () => {
           <ol className="mt-3 divide-y divide-gray-200 dark:divide-gray-700">
             {group.comments.map((comment, index) => (
               <li key={index}>
-                <div className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
+                <div className="items-center block p-3 flex hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Image
                     className="w-12 h-12 mb-3 mr-3 rounded-full sm:mb-0"
                     src={
