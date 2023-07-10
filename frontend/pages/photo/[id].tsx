@@ -114,7 +114,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
           </div>
         </div>
         <div className="flex flex-row-reverse justify-center mx-auto max-w-screen-lg">
-          <div className="p-4 w-1/4">
+          <div className="pl-4 py-4 w-full sm:w-1/2">
             <p className="text-gray-900">カメラ : {photo.camera_model}</p>
             <p className="text-gray-900">ISO : {photo.iso}</p>
             <p className="text-gray-900">F値 : {photo.f_value}</p>
@@ -133,7 +133,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
               })}
             </p>
           </div>
-          <div className="w-1/4">
+          <div className="pl-4 w-full sm:w-1/2">
             <div
               className="relative"
               style={{ width: `${100 * aspectRatio}%`, height: fixedHeight }}

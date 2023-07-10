@@ -11,14 +11,14 @@ const MypageTab: React.FC = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="w-1/2 md:w-1/4">
+      <div className="w-full md:w-1/2 lg:w-1/4">
         <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
           <ul
-            className="flex flex-wrap -mb-px text-sm font-medium text-center"
+            className="flex flex-row justify-center flex-wrap -mb-px text-sm font-medium text-center"
             id="myTab"
             role="tablist"
           >
-            <li className="w-1/3" role="presentation">
+            <li className="w-1/3 px-2" role="presentation">
               <Link href="/mypage/posts">
                 <div
                   className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
@@ -30,7 +30,7 @@ const MypageTab: React.FC = () => {
                 </div>
               </Link>
             </li>
-            <li className="w-1/3" role="presentation">
+            <li className="w-1/3 px-2" role="presentation">
               <Link href="/mypage/likes">
                 <div
                   className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
@@ -42,7 +42,7 @@ const MypageTab: React.FC = () => {
                 </div>
               </Link>
             </li>
-            <li className="w-1/3" role="presentation">
+            <li className="w-1/3 px-2" role="presentation">
               <Link href="/mypage/comments">
                 <div
                   className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
@@ -54,18 +54,6 @@ const MypageTab: React.FC = () => {
                 </div>
               </Link>
             </li>
-            {/* <li className="w-1/4" role="presentation">
-              <Link href="/mypage/favorites">
-                <div
-                  className={`inline-block p-4 border-b-2 rounded-t-lg cursor-pointer ${
-                    activeTab === "favorites" ? activeStyle : inactiveStyle
-                  }`}
-                  onClick={() => router.push("/mypage/favorites")}
-                >
-                  お気に入り
-                </div>
-              </Link>
-            </li> */}
           </ul>
         </div>
         <div>{/* 各タブのコンテンツは、それぞれのページで表示されます */}</div>

@@ -75,7 +75,7 @@ const Header: React.FC = () => {
               <>
                 <button
                   onClick={handleUploadButtonClick}
-                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
+                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 sm:px-4 py-2 sm:py-2.5 mr-1 sm:mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
 
                 <button
                   onClick={handleSearchButtonClick}
-                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-2 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
+                  className="text-gray-800 dark:text-black hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 sm:px-4 py-2 sm:py-2.5 mr-1 sm:mr-2 dark:hover:bg-gray-200 focus:outline-none dark:focus:ring-gray-100"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -297,7 +297,7 @@ const Header: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setShowModal(true)}
-                  className="text-white dark:text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-100"
+                  className="text-white dark:text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-800 font-medium rounded-lg text-sm px-2 sm:px-4 py-2 sm:py-2.5 mr-1 sm:mr-2 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-100"
                 >
                   ログイン
                 </button>

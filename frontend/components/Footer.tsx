@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                 </span>
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6">
               <div>
                 <ul className="text-gray-600 dark:text-gray-400">
                   <li className="mb-4">
@@ -35,13 +35,13 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                     </Link>
                   </li>
                   {/* <li>
-                    <Link
-                      href="https://tailwindcss.com/"
-                      className="hover:underline"
-                    >
-                      お問い合わせ
-                    </Link>
-                  </li> */}
+        <Link
+          href="https://tailwindcss.com/"
+          className="hover:underline"
+        >
+          お問い合わせ
+        </Link>
+      </li> */}
                 </ul>
               </div>
               <div>
