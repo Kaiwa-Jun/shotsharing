@@ -20,4 +20,5 @@ export interface Photo {
   location_enabled: boolean;
   latitude: number | null;
   longitude: number | null;
+  exposure_time: number;
 }

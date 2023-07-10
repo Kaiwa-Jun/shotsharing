@@ -17,6 +17,22 @@ interface RecommendListProps {
   photos?: Photo[];
 }
 
+const toFraction = (decimal: number) => {
+  if (decimal == null) {
+    // decimalがnullまたはundefinedの場合、何らかのデフォルト値を返す
+    return "";
+  }
+  const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+  const len = decimal.toString().length - 2;
+  let denominator = Math.pow(10, len);
+  let numerator = decimal * denominator;
+  const divisor = gcd(numerator, denominator); // Should be more than 1
+  numerator /= divisor; // Should be less than 10
+  denominator /= divisor;
+  if (denominator === 1) return `${numerator}`;
+  return `${numerator}/${denominator}`;
+};
+
 function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
   const [imageWidth, setImageWidth] = useState<number>(0);
   const [fixedHeight, setFixedHeight] = useState<number>(300);
@@ -363,13 +379,13 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                       )}
                     {showModal === photo.id && (
                       <div className="absolute top-8 right-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow py-2">
-                        <p
+                        {/* <p
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-                          // onClick={(event) => {
-                          //   event.stopPropagation();
-                          //   toggleModal(photo.id);
-                          //   setEditModalId(photo.id);
-                          // }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            toggleModal(photo.id);
+                            setEditModalId(photo.id);
+                          }}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -386,7 +402,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                             />
                           </svg>
                           投稿を編集
-                        </p>
+                        </p> */}
                         <p
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-500 flex items-center"
                           onClick={(event) => {
@@ -419,16 +435,19 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
                       {new Date(photo.created_at).toLocaleString()}
                     </p>
                     <p className="text-gray-900">
-                      カメラ: {photo.camera_model}
+                      カメラ : {photo.camera_model}
                     </p>
-                    <p className="text-gray-900">ISO: {photo.iso}</p>
-                    <p className="text-gray-900">F値: {photo.f_value}</p>
+                    <p className="text-gray-900">ISO : {photo.iso}</p>
+                    <p className="text-gray-900">F値 : {photo.f_value}</p>
                     <p className="text-gray-900">
-                      シャッタースピード: {photo.shutter_speed}
+                      シャッタースピード :{" "}
+                      {photo.exposure_time < 1
+                        ? toFraction(photo.exposure_time)
+                        : photo.exposure_time}
                     </p>
                     {photo.taken_at && (
                       <p className="text-gray-900">
-                        撮影日:{" "}
+                        撮影日 :{" "}
                         {new Date(photo.taken_at).toLocaleString("ja-JP", {
                           year: "numeric",
                           month: "numeric",
@@ -515,7 +534,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
           </div>
         </div>
       )}
-      {editModalId !== null && (
+      {/* {editModalId !== null && (
         <div
           id="edit-modal"
           tabIndex={-1}
@@ -604,7 +623,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

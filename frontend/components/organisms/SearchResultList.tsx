@@ -7,6 +7,22 @@ type Props = {
   searchResults: SearchResult[];
 };
 
+const toFraction = (decimal: number) => {
+  if (decimal == null) {
+    // decimalがnullまたはundefinedの場合、何らかのデフォルト値を返す
+    return "";
+  }
+  const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+  const len = decimal.toString().length - 2;
+  let denominator = Math.pow(10, len);
+  let numerator = decimal * denominator;
+  const divisor = gcd(numerator, denominator); // Should be more than 1
+  numerator /= divisor; // Should be less than 10
+  denominator /= divisor;
+  if (denominator === 1) return `${numerator}`;
+  return `${numerator}/${denominator}`;
+};
+
 const SearchResultList: React.FC<Props> = ({ searchResults }) => {
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
@@ -46,14 +62,17 @@ const SearchResultList: React.FC<Props> = ({ searchResults }) => {
             <p className="text-gray-500">
               {new Date(result.created_at).toLocaleString()}
             </p>
-            <p className="text-gray-900">カメラ: {result.camera_model}</p>
-            <p className="text-gray-900">ISO: {result.iso}</p>
-            <p className="text-gray-900">F値: {result.f_value}</p>
+            <p className="text-gray-900">カメラ : {result.camera_model}</p>
+            <p className="text-gray-900">ISO : {result.iso}</p>
+            <p className="text-gray-900">F値 : {result.f_value}</p>
             <p className="text-gray-900">
-              シャッタースピード: {result.shutter_speed}
+              シャッタースピード :{" "}
+              {result.exposure_time < 1
+                ? toFraction(result.exposure_time)
+                : result.exposure_time}
             </p>
             <p className="text-gray-900">
-              撮影日:{" "}
+              撮影日 :{" "}
               {new Date(result.taken_at).toLocaleString("ja-JP", {
                 year: "numeric",
                 month: "numeric",
