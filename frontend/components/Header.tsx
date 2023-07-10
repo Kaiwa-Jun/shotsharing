@@ -97,7 +97,7 @@ const Header: React.FC = () => {
                     onClose={() => setShowUploadModal(false)}
                     onImageUpload={(photo: any) => {
                       handleImageUpload(photo);
-                      router.reload();
+                      // router.reload();
                     }}
                   />
                 )}

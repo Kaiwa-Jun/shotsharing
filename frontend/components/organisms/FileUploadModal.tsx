@@ -5,6 +5,9 @@ import { User } from "firebase/auth";
 // import { Photo } from "../../contexts/PhotoContext";
 import { Photo } from "../../types/photo";
 import firebase from "firebase/compat/app";
+import TwitterShareButton from "./TwitterShareButton";
+import { text } from "stream/consumers";
+import { usePhotoContext } from "@/contexts/PhotoContext";
 
 type FileUploadModalProps = {
   onClose: () => void;
@@ -27,6 +30,17 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [isUploadFinished, setIsUploadFinished] = useState<boolean | null>(
+    null
+  );
+  const [photo, setPhoto] = useState<Photo | null>(null);
+  const [showTwitterButton, setShowTwitterButton] = useState(false);
+  const { addPhoto } = usePhotoContext();
+  const [uploadState, setUploadState] = useState<{
+    isFinished: boolean;
+    photo: Photo | null;
+  }>({ isFinished: false, photo: null });
+  const [showUploadModal, setShowUploadModal] = useState(true);
 
   useEffect(() => {
     const auth = getAuth();
@@ -40,7 +54,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         setCurrentUserId(user ? user.uid : null);
-        console.log("currentUserId:", user ? user.uid : null);
+        // console.log("currentUserId:", user ? user.uid : null);
       });
 
     return () => {
@@ -88,70 +102,82 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
   };
 
   const handlePostButtonClick = async () => {
-    console.log("Selected file:", selectedFile);
-    console.log("Current user:", user);
-    console.log("Current location:", currentLocation);
-    console.log("Current user token:", currentUserToken);
-    setIsLoading(true);
-
-    if (selectedFile && user) {
-      const formData = new FormData();
-      formData.append("image", selectedFile);
-      formData.append("user_id", user.uid);
-      formData.append("location_enabled", String(locationEnabled));
-      if (locationEnabled && currentLocation) {
-        formData.append("latitude", String(currentLocation.latitude));
-        formData.append("longitude", String(currentLocation.longitude));
-
-        console.log("latitude:", currentLocation.latitude);
-        console.log("longitude:", currentLocation.longitude);
-        console.log("location_enabled:", locationEnabled);
-      }
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${currentUserToken}`,
-          },
-          body: formData,
+    try {
+      setIsLoading(true);
+      console.log("setIsLoading called");
+      if (selectedFile && user) {
+        console.log("selectedFile and user are available");
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+        formData.append("user_id", user.uid);
+        formData.append("location_enabled", String(locationEnabled));
+        if (locationEnabled && currentLocation) {
+          formData.append("latitude", String(currentLocation.latitude));
+          formData.append("longitude", String(currentLocation.longitude));
         }
-      );
 
-      const data = await response.json();
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${currentUserToken}`,
+            },
+            body: formData,
+          }
+        );
 
-      if (response.ok) {
-        const photo: Photo = {
-          id: data.id,
-          file_url: data.url,
-          image_blob: {
-            filename: data.filename,
-          },
-          camera_model: data.camera_model || "",
-          shutter_speed: data.shutter_speed || "",
-          iso: data.iso || 0,
-          f_value: data.f_value || 0,
-          created_at: data.created_at || "",
-          taken_at: data.taken_at,
-          user: data.user,
-          categories: data.categories,
-          location_enabled: data.location_enabled,
-          latitude: data.latitude || null,
-          longitude: data.longitude || null,
-        };
-        onImageUpload(photo);
-        setIsLoading(false);
-        onClose();
+        console.log("fetch called");
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const photo: Photo = {
+            id: data.id,
+            file_url: data.url,
+            image_blob: {
+              filename: data.filename,
+            },
+            camera_model: data.camera_model || "",
+            shutter_speed: data.shutter_speed || "",
+            iso: data.iso || 0,
+            f_value: data.f_value || 0,
+            created_at: data.created_at || "",
+            taken_at: data.taken_at,
+            user: data.user,
+            categories: data.categories,
+            location_enabled: data.location_enabled,
+            latitude: data.latitude || null,
+            longitude: data.longitude || null,
+          };
+          onImageUpload(photo);
+          setIsLoading(false);
+          console.log("photo:", photo); // photo の内容をログに出力
+          console.log(
+            "photo.file_url:",
+            photo ? photo.file_url : "photo or photo.file_url is undefined"
+          );
+          console.log("uploadState before setUploadState", uploadState); // 追加
+          setUploadState({ isFinished: true, photo }); // ここで photo を設定
+          console.log("uploadState after setUploadState", uploadState); // 追加
+          // addPhoto(photo);
+          setShowUploadModal(false);
+        } else {
+          console.error(data);
+          // setIsLoading(false);
+          setIsUploadFinished(false);
+        }
       } else {
-        console.error(data);
-        setIsLoading(false);
+        console.error("File or user is missing");
+        // setIsLoading(false);
       }
-    } else {
-      console.error("File or user is missing");
+      // setIsLoading(false);
+    } catch (error) {
+      console.error("Error in handlePostButtonClick:", error);
+      setIsUploadFinished(true);
+    } finally {
       setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleClose = () => {
@@ -174,6 +200,32 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
   };
 
   const file = selectedImage ? selectedImage : null;
+
+  // useEffect(() => {
+  //   if (isUploadFinished === true && photo !== null) {
+  //     setShowTwitterButton(true);
+  //   } else {
+  //     setShowTwitterButton(false);
+  //   }
+  // }, [isUploadFinished, photo]);
+
+  useEffect(() => {
+    console.log("uploadState changed to", uploadState); // uploadState の変更をログに出力
+
+    if (uploadState.isFinished && uploadState.photo !== null) {
+      console.log("Setting showTwitterButton to true");
+      setShowTwitterButton(true);
+    } else {
+      console.log("Setting showTwitterButton to false");
+      setShowTwitterButton(false);
+    }
+  }, [uploadState]);
+
+  useEffect(() => {
+    if (uploadState.isFinished && uploadState.photo) {
+      addPhoto(uploadState.photo);
+    }
+  }, [uploadState, addPhoto]); // uploadState と addPhoto の変更を監視します。
 
   return (
     <div
@@ -206,55 +258,66 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           </div>
           <p className="mt-2 text-gray-500">画像をアップロード中です</p>
         </div>
-      ) : (
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            <svg
-              aria-hidden="true"
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
+      ) : showTwitterButton ? (
+        <>
+          <TwitterShareButton
+            url={uploadState.photo ? uploadState.photo.file_url : ""}
+            text="テストテキスト"
+            onClose={() => setShowTwitterButton(false)}
+          />
+        </>
+      ) : showUploadModal ? (
+        <>
+          {console.log("showTwitterButton:", showTwitterButton)}
+          {console.log("TwitterShareButton url:", photo ? photo.file_url : "")}
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-[500px] h-[450px] transition-all duration-300 ease-in-out transform">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             >
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <span className="sr-only">Close modal</span>
-          </button>
-          <div className="flex flex-col items-center justify-center">
-            {selectedImage ? (
-              <Image
-                className="max-h-[180px] h-auto max-w-full object-contain my-5"
-                src={URL.createObjectURL(selectedImage)}
-                alt="Selected image"
-                width={500}
-                height={300}
-              />
-            ) : (
-              <Image
-                className="max-h-[180px] h-auto max-w-full object-contain my-5"
-                src="/upload-default.svg"
-                alt="Default image"
-                width={500}
-                height={300}
-              />
-            )}
+              <svg
+                aria-hidden="true"
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <span className="sr-only">Close modal</span>
+            </button>
+            <div className="flex flex-col items-center justify-center">
+              {selectedImage ? (
+                <Image
+                  className="max-h-[180px] h-auto max-w-full object-contain my-5"
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Selected image"
+                  width={500}
+                  height={300}
+                />
+              ) : (
+                <Image
+                  className="max-h-[180px] h-auto max-w-full object-contain my-5"
+                  src="/upload-default.svg"
+                  alt="Default image"
+                  width={500}
+                  height={300}
+                />
+              )}
 
-            <input
-              className="block w-[350px] mb-0 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              id="small_size"
-              type="file"
-              onChange={handleImageChange}
-            />
+              <input
+                className="block w-[350px] mb-0 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="small_size"
+                type="file"
+                onChange={handleImageChange}
+              />
 
-            {/* <label className="relative inline-flex items-center cursor-pointer mt-5">
+              {/* <label className="relative inline-flex items-center cursor-pointer mt-5">
               <input
                 type="checkbox"
                 value=""
@@ -267,25 +330,27 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
                 撮影場所を共有する
               </span>
             </label> */}
-            <div className="flex mt-10">
-              <button
-                onClick={handleClose}
-                type="button"
-                className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                キャンセル
-              </button>
-              <button
-                onClick={handlePostButtonClick}
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                投稿
-              </button>
+              <div className="flex mt-10">
+                <button
+                  onClick={handleClose}
+                  type="button"
+                  className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handlePostButtonClick}
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
+                  投稿
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+          ))
+        </>
+      ) : null}
     </div>
   );
 };

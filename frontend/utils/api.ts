@@ -99,9 +99,15 @@ export const postComment = async (
 };
 
 export async function getComments(photoId: number): Promise<Comment[]> {
+  // photoIdのチェック
+  if (typeof photoId !== "number") {
+    throw new Error(`Invalid photoId: ${photoId}`);
+  }
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/comments`
   );
+
   if (!response.ok) {
     throw new Error("コメントの取得に失敗しました");
   }
@@ -226,7 +232,7 @@ export async function getLikesCount(
       throw new Error("Failed to fetch likes count");
     }
     const data = await response.json();
-    console.log(`Likes count for photoId ${photoId}: ${data.likes_count}`);
+    // console.log(`Likes count for photoId ${photoId}: ${data.likes_count}`);
     return data.likes_count;
   } catch (error) {
     console.error(error);

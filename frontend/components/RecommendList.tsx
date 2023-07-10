@@ -72,7 +72,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         setCurrentUserId(user ? user.uid : null);
-        console.log("currentUserId:", user ? user.uid : null);
+        // console.log("currentUserId:", user ? user.uid : null);
       });
 
     return () => {
@@ -97,8 +97,18 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
     const fetchCommentCounts = async () => {
       const counts: Record<number, number> = {};
       for (const photo of photos) {
-        const comments = await getComments(photo.id);
-        counts[photo.id] = comments.length;
+        // Ensure photo and photo.id are defined
+        if (photo && photo.id) {
+          try {
+            console.log(`Fetching comments for photo: ${photo.id}`);
+            const comments = await getComments(photo.id);
+            counts[photo.id] = comments.length;
+          } catch (error) {
+            console.error(
+              `Error fetching comments for photo ${photo.id}: ${error}`
+            );
+          }
+        }
       }
       setCommentCounts(counts);
     };
@@ -142,7 +152,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
       if (!idToken) return;
       const likes: Record<number, boolean> = {};
       for (const photo of photos) {
-        console.log(`Fetching like for photoId: ${photo.id}`);
+        // console.log(`Fetching like for photoId: ${photo.id}`);
         try {
           const likeExists = await getLike(photo.id, idToken);
           // console.log(`getLike returned: ${likeExists}`);
@@ -158,7 +168,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
   }, [photos, currentUserId]);
 
   useEffect(() => {
-    console.log(`Photos state: ${JSON.stringify(photos)}`);
+    // console.log(`Photos state: ${JSON.stringify(photos)}`);
     const fetchLikeCounts = async () => {
       try {
         const counts: Record<number, number> = {};
@@ -179,7 +189,7 @@ function RecommendList({ photos = [] }: RecommendListProps): JSX.Element {
 
   useEffect(() => {
     photos.forEach((photo) => {
-      console.log("photo.location_enabled:", photo.location_enabled);
+      // console.log("photo.location_enabled:", photo.location_enabled);
     });
   }, [photos]);
 

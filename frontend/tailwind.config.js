@@ -7,6 +7,9 @@ module.exports = {
       maxWidth: {
         "1/3": "33.333333%",
       },
+      colors: {
+        twitter: "#1da1f2",
+      },
     },
   },
   variants: {
