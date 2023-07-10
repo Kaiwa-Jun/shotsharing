@@ -15,4 +15,5 @@ export type SearchResult = {
   created_at: string;
   updated_at: string;
   categories: Category[];
+  exposure_time: number;
 };

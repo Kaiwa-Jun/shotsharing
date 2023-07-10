@@ -28,6 +28,22 @@ interface Module {
   };
 }
 
+const toFraction = (decimal: number) => {
+  if (decimal == null) {
+    // decimalがnullまたはundefinedの場合、何らかのデフォルト値を返す
+    return "";
+  }
+  const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+  const len = decimal.toString().length - 2;
+  let denominator = Math.pow(10, len);
+  let numerator = decimal * denominator;
+  const divisor = gcd(numerator, denominator); // Should be more than 1
+  numerator /= divisor; // Should be less than 10
+  denominator /= divisor;
+  if (denominator === 1) return `${numerator}`;
+  return `${numerator}/${denominator}`;
+};
+
 function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
   const [imageWidth, setImageWidth] = useState<number>(0);
   const [fixedHeight, setFixedHeight] = useState<number>(300);
@@ -467,16 +483,20 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                       {new Date(photo.created_at).toLocaleString()}
                     </p>
                     <p className="text-gray-900">
-                      カメラ: {photo.camera_model}
+                      カメラ : {photo.camera_model}
                     </p>
-                    <p className="text-gray-900">ISO: {photo.iso}</p>
-                    <p className="text-gray-900">F値: {photo.f_value}</p>
+                    <p className="text-gray-900">ISO : {photo.iso}</p>
+                    <p className="text-gray-900">F値 : {photo.f_value}</p>
                     <p className="text-gray-900">
-                      シャッタースピード: {photo.shutter_speed}
+                      シャッタースピード :{" "}
+                      {photo.exposure_time < 1
+                        ? toFraction(photo.exposure_time)
+                        : photo.exposure_time}
                     </p>
+
                     {photo.taken_at && (
                       <p className="text-gray-900">
-                        撮影日:{" "}
+                        撮影日 :{" "}
                         {new Date(photo.taken_at).toLocaleString("ja-JP", {
                           year: "numeric",
                           month: "numeric",
