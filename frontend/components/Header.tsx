@@ -1,11 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import AuthModal from "@/components/organisms/AuthModal";
 import { signOut } from "@/lib/auth";
-import { useEffect, useState } from "react";
-import "firebase/auth";
-import { auth } from "../lib/firebaseConfig";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Image from "next/image";
@@ -13,30 +8,19 @@ import FileUploadModal from "./organisms/FileUploadModal";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { usePhotoContext } from "../contexts/PhotoContext";
+import { useAuth } from "../contexts/UserContext"; // 追加: useAuthをインポート
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
 const Header: React.FC = () => {
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const { user } = useAuth(); // 変更: useAuthからuserを取得
   const [showModal, setShowModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [photos, setPhotos] = useState<any[]>([]);
   const router = useRouter();
   const { addPhoto, handleImageUpload } = usePhotoContext();
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(
-      (user: firebase.User | null) => {
-        setUser(user);
-      }
-    );
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   const handleUploadButtonClick = () => {
     setShowUploadModal(true);
@@ -129,9 +113,9 @@ const Header: React.FC = () => {
                       style={{ backgroundColor: "rgba(255, 255, 255, 0)" }}
                     >
                       <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                        {user?.photoURL ? (
+                        {user?.avatar_url ? (
                           <Image
-                            src={user.photoURL}
+                            src={user.avatar_url}
                             alt="Profile"
                             className="absolute w-full h-full object-cover"
                             width={50}
@@ -177,7 +161,7 @@ const Header: React.FC = () => {
                                   "block px-4 py-2 text-sm cursor-pointer"
                                 )}
                               >
-                                {user?.displayName || "ユーザーネーム"}
+                                {user?.display_name || "ユーザーネーム"}
                               </div>
                             </Link>
                           )}

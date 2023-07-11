@@ -6,6 +6,7 @@ module.exports = {
       "shotsharing.s3.ap-northeast-1.amazonaws.com",
       "localhost",
       "fastly.picsum.photos",
+      "firebasestorage.googleapis.com",
     ],
   },
   async rewrites() {

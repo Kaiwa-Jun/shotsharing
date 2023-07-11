@@ -3,9 +3,18 @@ import { Comment } from "../types/comment";
 import { SearchResult } from "../types/searchResult";
 import axios from "axios";
 import { User } from "../types/user";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+
+const storage = getStorage();
 
 interface GetPhotosParams {
   firebase_uid: string;
@@ -289,3 +298,35 @@ export async function fetchSearchResults(
   const data = await response.json();
   return data;
 }
+
+export const updateUserName = async (idToken: string, newUserName: string) => {
+  const user = firebase.auth().currentUser;
+
+  if (user) {
+    await user.updateProfile({
+      displayName: newUserName,
+    });
+  } else {
+    throw new Error("No user is currently logged in.");
+  }
+};
+
+export const updateUserProfileImage = async (
+  idToken: string,
+  imageBlob: Blob
+) => {
+  const user = firebase.auth().currentUser;
+
+  if (user) {
+    // storageRefを作成します
+    const storageRef = ref(storage, `profile_images/${user.uid}`);
+
+    // ファイルをアップロードします
+    const uploadTask = uploadBytesResumable(storageRef, imageBlob);
+
+    // アップロードされたファイルのURLを取得します
+    return getDownloadURL(uploadTask.snapshot.ref);
+  } else {
+    throw new Error("No user is currently logged in.");
+  }
+};
