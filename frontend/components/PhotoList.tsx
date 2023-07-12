@@ -11,7 +11,7 @@ import {
   deleteLike,
   getLike,
   getComments,
-  getLikesCount,
+  // getLikesCount,
 } from "../utils/api";
 
 const LoadableActionCable = dynamic(() => import("@rails/actioncable"), {
@@ -178,14 +178,15 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     if (!idToken) return;
 
     try {
+      console.log(`Fetching like for photoId: ${photoId}`); // 追記
       const likeExists = await getLike(photoId, idToken);
-      // console.log(`getLike returned: ${likeExists}`);
 
       if (likeExists) {
+        console.log(`Deleting like for photoId: ${photoId}`); // 追記
         await deleteLike(photoId, idToken);
       } else {
+        console.log(`Creating like for photoId: ${photoId}`); // 追記
         await createLike(photoId, idToken);
-        // console.log(`Successfully created like for photoId: ${photoId}`);
       }
 
       setLikes((prevLikes) => {
@@ -193,7 +194,6 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
           ...prevLikes,
           [photoId]: !likeExists,
         };
-        // console.log(`Updated likes state: ${JSON.stringify(updatedLikes)}`);
         return updatedLikes;
       });
     } catch (error) {
@@ -224,25 +224,25 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchLikes();
   }, [photos, currentUserId]);
 
-  useEffect(() => {
-    // console.log(`Photos state: ${JSON.stringify(photos)}`);
-    const fetchLikeCounts = async () => {
-      try {
-        const counts: Record<number, number> = {};
-        const idToken = await firebase.auth().currentUser?.getIdToken();
-        if (!idToken) return;
-        for (const photo of photos) {
-          const likes = await getLikesCount(photo.id, idToken); // いいねの数を取得する関数
-          counts[photo.id] = likes; // 修正: likes.length -> likes
-        }
-        setLikeCounts(counts);
-        // console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
-      } catch (error) {
-        console.error(`Error in fetchLikeCounts: ${error}`);
-      }
-    };
-    fetchLikeCounts();
-  }, [photos, likes]); // likesを依存配列に追加
+  // useEffect(() => {
+  //   // console.log(`Photos state: ${JSON.stringify(photos)}`);
+  //   const fetchLikeCounts = async () => {
+  //     try {
+  //       const counts: Record<number, number> = {};
+  //       const idToken = await firebase.auth().currentUser?.getIdToken();
+  //       if (!idToken) return;
+  //       for (const photo of photos) {
+  //         const likesCount = await getLikesCount(photo.id, idToken); // いいねの数を取得する関数
+  //         counts[photo.id] = likesCount;
+  //       }
+  //       setLikeCounts(counts);
+  //       // console.log(`Updated likeCounts state: ${JSON.stringify(counts)}`);
+  //     } catch (error) {
+  //       console.error(`Error in fetchLikeCounts: ${error}`);
+  //     }
+  //   };
+  //   fetchLikeCounts();
+  // }, [photos, likes]); // likesを依存配列に追加
 
   useEffect(() => {
     photos.forEach((photo) => {
@@ -342,7 +342,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         </svg>
                       </div>
                       <p className="ml-0">
-                        {likeCounts[photo.id] ? likeCounts[photo.id] : 0}
+                        {photo.likes_count ? photo.likes_count : 0}
                       </p>
                     </div>
 
