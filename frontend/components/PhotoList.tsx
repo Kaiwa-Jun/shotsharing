@@ -87,12 +87,10 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
 
     const subscription = cable.subscriptions.create("LikesChannel", {
       received: (data: LikeData) => {
-        if (data.photo_id in likes) {
-          setLikeCounts((prev) => ({
-            ...prev,
-            [data.photo_id]: data.likes_count,
-          }));
-        }
+        setLikeCounts((prev) => ({
+          ...prev,
+          [data.photo_id]: data.likes_count,
+        }));
       },
     });
     return () => {
@@ -178,16 +176,22 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     if (!idToken) return;
 
     try {
-      console.log(`Fetching like for photoId: ${photoId}`); // 追記
+      console.log(`Fetching like for photoId: ${photoId}`);
       const likeExists = await getLike(photoId, idToken);
 
       if (likeExists) {
-        console.log(`Deleting like for photoId: ${photoId}`); // 追記
+        console.log(`Deleting like for photoId: ${photoId}`);
         await deleteLike(photoId, idToken);
       } else {
-        console.log(`Creating like for photoId: ${photoId}`); // 追記
+        console.log(`Creating like for photoId: ${photoId}`);
         await createLike(photoId, idToken);
       }
+
+      // Update likeCounts
+      setLikeCounts((prev) => {
+        const newCount = prev[photoId] + (likeExists ? -1 : 1);
+        return { ...prev, [photoId]: newCount };
+      });
 
       setLikes((prevLikes) => {
         const updatedLikes = {
