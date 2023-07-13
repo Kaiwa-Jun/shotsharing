@@ -11,7 +11,7 @@ import {
   deleteLike,
   getLike,
   getComments,
-  // getLikesCount,
+  getLikesCount,
 } from "../utils/api";
 
 const LoadableActionCable = dynamic(() => import("@rails/actioncable"), {
@@ -148,27 +148,42 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchCommentCounts = async () => {
-      const counts: Record<number, number> = {};
-      for (const photo of photos) {
-        // Ensure photo and photo.id are defined
-        if (photo && photo.id) {
-          try {
-            console.log(`Fetching comments for photo: ${photo.id}`);
-            const comments = await getComments(photo.id);
-            counts[photo.id] = comments.length;
-          } catch (error) {
-            console.error(
-              `Error fetching comments for photo ${photo.id}: ${error}`
-            );
-          }
-        }
-      }
-      setCommentCounts(counts);
-    };
-    fetchCommentCounts();
-  }, [photos]);
+  // useEffect(() => {
+  //   const fetchCommentCounts = async () => {
+  //     const counts: Record<number, number> = {};
+  //     for (const photo of photos) {
+  //       // Ensure photo and photo.id are defined
+  //       if (photo && photo.id) {
+  //         try {
+  //           console.log(`Fetching comments for photo: ${photo.id}`);
+  //           const comments = await getComments(photo.id);
+  //           counts[photo.id] = comments.length;
+  //         } catch (error) {
+  //           console.error(
+  //             `Error fetching comments for photo ${photo.id}: ${error}`
+  //           );
+  //         }
+  //       }
+  //     }
+  //     setCommentCounts(counts);
+  //   };
+  //   fetchCommentCounts();
+  // }, [photos]);
+
+  // useEffect(() => {
+  //   const fetchLikeCounts = async () => {
+  //     const idToken = await firebase.auth().currentUser?.getIdToken();
+  //     if (!idToken) return;
+
+  //     const counts: Record<number, number> = {};
+  //     for (const photo of photos) {
+  //       const likesCount = await getLikesCount(photo.id, idToken);
+  //       counts[photo.id] = likesCount;
+  //     }
+  //     setLikeCounts(counts);
+  //   };
+  //   fetchLikeCounts();
+  // }, [photos]);
 
   const handleLikeClick = async (photoId: number) => {
     if (!currentUserId) return;
@@ -188,10 +203,11 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
       }
 
       // Update likeCounts
-      setLikeCounts((prev) => {
-        const newCount = prev[photoId] + (likeExists ? -1 : 1);
-        return { ...prev, [photoId]: newCount };
-      });
+      const newCount = await getLikesCount(photoId, idToken);
+      setLikeCounts((prev) => ({
+        ...prev,
+        [photoId]: newCount,
+      }));
 
       setLikes((prevLikes) => {
         const updatedLikes = {
@@ -206,27 +222,55 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     }
   };
 
+  // useEffect(() => {
+  //   const fetchLikes = async () => {
+  //     if (!currentUserId) return;
+  //     const idToken = await firebase.auth().currentUser?.getIdToken();
+  //     if (!idToken) return;
+  //     const likes: Record<number, boolean> = {};
+  //     for (const photo of photos) {
+  //       // console.log(`Fetching like for photoId: ${photo.id}`);
+  //       try {
+  //         const likeExists = await getLike(photo.id, idToken);
+  //         // console.log(`getLike returned: ${likeExists}`);
+  //         likes[photo.id] = likeExists;
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //     setLikes(likes);
+  //     // console.log(likes);
+  //   };
+  //   fetchLikes();
+  // }, [photos, currentUserId]);
+
   useEffect(() => {
-    const fetchLikes = async () => {
-      if (!currentUserId) return;
-      const idToken = await firebase.auth().currentUser?.getIdToken();
-      if (!idToken) return;
-      const likes: Record<number, boolean> = {};
+    const fetchInitialCounts = async () => {
+      const initialCommentCounts: Record<number, number> = {};
+      const initialLikeCounts: Record<number, number> = {};
+      const initialLikes: Record<number, boolean> = {};
+
       for (const photo of photos) {
-        // console.log(`Fetching like for photoId: ${photo.id}`);
-        try {
+        const comments = await getComments(photo.id);
+        initialCommentCounts[photo.id] = comments.length;
+
+        const idToken = await firebase.auth().currentUser?.getIdToken();
+        if (idToken) {
+          const likesCount = await getLikesCount(photo.id, idToken);
+          initialLikeCounts[photo.id] = likesCount;
+
           const likeExists = await getLike(photo.id, idToken);
-          // console.log(`getLike returned: ${likeExists}`);
-          likes[photo.id] = likeExists;
-        } catch (error) {
-          console.error(error);
+          initialLikes[photo.id] = likeExists;
         }
       }
-      setLikes(likes);
-      // console.log(likes);
+
+      setCommentCounts(initialCommentCounts);
+      setLikeCounts(initialLikeCounts);
+      setLikes(initialLikes);
     };
-    fetchLikes();
-  }, [photos, currentUserId]);
+
+    fetchInitialCounts();
+  }, [photos]);
 
   // useEffect(() => {
   //   // console.log(`Photos state: ${JSON.stringify(photos)}`);
@@ -346,7 +390,8 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         </svg>
                       </div>
                       <p className="ml-0">
-                        {photo.likes_count ? photo.likes_count : 0}
+                        {/* {photo.likes_count ? photo.likes_count : 0} */}
+                        {likeCounts[photo.id] ? likeCounts[photo.id] : 0}
                       </p>
                     </div>
 
