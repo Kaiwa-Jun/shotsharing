@@ -4,7 +4,11 @@ import { auth } from "../../lib/firebaseConfig";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import Image from "next/image";
-import { updateUserName, updateUserProfileImage } from "../../utils/api"; // 関数をインポート
+import {
+  updateUserName,
+  updateUserProfileImage,
+  updateBackendUser,
+} from "../../utils/api"; // 関数をインポート
 import { useAuth } from "../../contexts/UserContext";
 import { User } from "../../types/user";
 
@@ -61,13 +65,16 @@ const UserInfo = () => {
     if (user && (username || selectedImage)) {
       try {
         // ユーザー名を更新
+        let updatedUsername = user.display_name;
         if (username) {
           await updateUserName(user.firebase_uid, username);
+          updatedUsername = username;
         }
         // プロフィール画像を更新
+        let imageUrl = user.avatar_url;
         if (selectedImage) {
           const selectedFile = dataURItoBlob(selectedImage);
-          const imageUrl = await updateUserProfileImage(
+          imageUrl = await updateUserProfileImage(
             user.firebase_uid,
             selectedFile
           ); // アップロードした画像のURLを取得
@@ -76,15 +83,18 @@ const UserInfo = () => {
           await firebase.auth().currentUser?.updateProfile({
             photoURL: imageUrl,
           });
-
-          // ここで再度ユーザー情報を取得して、状態を更新
-          const firebaseUser = firebase.auth().currentUser;
-          const updatedUser = await convertFirebaseUserToUser(firebaseUser);
-          setUser(updatedUser); // 共有のユーザー情報を更新
-
-          // 画像が更新されたことを通知
-          setImageUpdated(true);
         }
+
+        // ここでバックエンドのユーザー情報も更新
+        if (user && username && imageUrl && user.idToken) {
+          await updateBackendUser(
+            user.firebase_uid,
+            username,
+            imageUrl,
+            user.idToken
+          );
+        }
+
         // ここで再度ユーザー情報を取得して、状態を更新
         const firebaseUser = firebase.auth().currentUser;
         const updatedUser = await convertFirebaseUserToUser(firebaseUser);
@@ -92,6 +102,7 @@ const UserInfo = () => {
       } catch (error) {
         alert(`ユーザー情報の更新に失敗しました: ${(error as Error).message}`);
       }
+      setModalOpen(false);
     }
   };
 

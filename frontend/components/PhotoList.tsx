@@ -374,7 +374,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill={(() => {
-                            console.log(likes[photo.id]);
+                            console.log(`いいね状態：${likes[photo.id]}`);
                             return likes[photo.id] ? "red" : "none";
                           })()}
                           stroke={likes[photo.id] ? "red" : "currentColor"}

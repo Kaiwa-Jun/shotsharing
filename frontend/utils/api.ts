@@ -330,3 +330,32 @@ export const updateUserProfileImage = async (
     throw new Error("No user is currently logged in.");
   }
 };
+
+export async function updateBackendUser(
+  firebase_uid: string,
+  username: string,
+  imageUrl: string,
+  idToken: string
+) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/users/${firebase_uid}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({
+        firebase_uid,
+        display_name: username,
+        avatar_url: imageUrl,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update user information on backend.");
+  }
+
+  return response.json();
+}
