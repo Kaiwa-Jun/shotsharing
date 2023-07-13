@@ -334,6 +334,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                   "photo.user.firebase_uid:",
                   photo.user.firebase_uid
                 ),
+              console.log("currentUserId:", currentUserId),
               (
                 <div
                   key={photo.id}

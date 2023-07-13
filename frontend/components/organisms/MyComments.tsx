@@ -59,7 +59,7 @@ const MyComments: React.FC = () => {
     };
 
     fetchComments();
-  }, [user]);
+  }, [user]); // userを依存性配列に追加
 
   return (
     <div className="sm:max-w-full lg:max-w-1/3 mx-auto p-5 mb-4 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">

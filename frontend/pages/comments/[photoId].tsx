@@ -68,6 +68,16 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
     }
   }, [photo]);
 
+  useEffect(() => {
+    // ユーザー情報が更新されたときにコメントリストを再取得する
+    if (photo) {
+      getComments(photo.id).then((comments) => {
+        console.log(comments); // ここでAPIのレスポンスをログ出力
+        setComments(comments);
+      });
+    }
+  }, [photo, user]); // userを依存性配列に追加
+
   if (!photo) {
     return <div>Loading...</div>;
   }
