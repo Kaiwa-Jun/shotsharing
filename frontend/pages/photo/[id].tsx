@@ -33,6 +33,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   const fixedHeight = 300; // 画像の高さを固定
   const router = useRouter();
   const { id } = router.query;
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const aspectRatio =
     photo && photo.height && photo.width ? photo.height / photo.width : 1;
@@ -54,11 +55,19 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
     }
   }, [id, initialPhoto]);
 
+  useEffect(() => {
+    if (photo && photo.user && photo.user.avatar_url) {
+      setAvatarUrl(photo.user.avatar_url);
+    }
+  }, [photo]);
+
   if (!photo) {
     return <div>Loading...</div>;
   }
 
   console.log("presignedURL:", photo.file_url);
+  console.log("photo.user:", photo.user);
+  console.log("photo.user.avatar_url:", photo.user?.avatar_url);
 
   return (
     <>
@@ -96,15 +105,11 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
       <div className="my-7">
         <div className="flex items-center justify-center my-5">
           <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-            <Image
-              src={
-                photo.user && photo.user.avatar_url
-                  ? photo.user.avatar_url
-                  : "/path/to/default/avatar.png"
-              }
+            <img
+              src={avatarUrl ? avatarUrl : "/path/to/default/avatar.png"}
               alt="User avatar"
-              layout="fill"
-              objectFit="contain"
+              width="500"
+              height="500"
             />
           </div>
           <div className="py-1 ml-6 text-2xl">
