@@ -390,6 +390,7 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
                         </svg>
                       </div>
                       <p className="ml-0">
+                        {/* photo.likes_countのほうが早い */}
                         {/* {photo.likes_count ? photo.likes_count : 0} */}
                         {likeCounts[photo.id] ? likeCounts[photo.id] : 0}
                       </p>
