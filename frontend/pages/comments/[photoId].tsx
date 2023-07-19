@@ -130,7 +130,7 @@ const CommentPage: React.FC<CommentPageProps> = ({ initialPhoto }) => {
               style={{ width: `${100 * aspectRatio}%`, height: fixedHeight }}
             >
               <Image
-                src={photo.file_url}
+                src={photo.image_url}
                 alt="Uploaded photo"
                 layout="fill"
                 objectFit="contain"

@@ -22,4 +22,5 @@ export interface Photo {
   longitude: number | null;
   exposure_time: number;
   likes_count: number;
+  image_url: string;
 }

@@ -61,27 +61,36 @@ const MyComments: React.FC = () => {
     fetchComments();
   }, [user]); // userを依存性配列に追加
 
+  useEffect(() => {
+    groupedComments.forEach((group) => {
+      if (group.photo) {
+        console.log(group.photo);
+      } else {
+        console.log("No photo");
+      }
+    });
+  }, [groupedComments]);
+
   return (
     <div className="sm:max-w-full lg:max-w-1/3 mx-auto p-5 mb-4 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
       {groupedComments.map((group, index) => (
-        // Added mt-5 to add vertical spacing between posts
         <div key={index} className="mt-5">
-          <time className="text-lg font-semibold text-gray-900 dark:text-white">
-            {group.photo
+          <time className="text-lg  font-semibold text-gray-900 dark:text-white">
+            {/* {group.photo
               ? new Date(group.photo.created_at).toLocaleDateString("ja-JP", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                 })
-              : "Unknown Date"}
+              : "Unknown Date"} */}
           </time>
 
           {group.photo ? (
             <div className="w-full">
               <Link href={`/photo/${group.photo.id}`}>
                 <Image
-                  className="h-auto mt-3 mb-3 rounded cursor-pointer"
-                  src={group.photo.file_url}
+                  className="h-auto mt-12 mb-3 rounded cursor-pointer"
+                  src={group.photo.image_url}
                   alt="Grouped photo"
                   layout="responsive"
                   width={1000}
