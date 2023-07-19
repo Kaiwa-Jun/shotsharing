@@ -50,8 +50,16 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
   }, [photo, fixedHeight]);
 
   useEffect(() => {
+    console.log("initialPhoto:", initialPhoto);
+    console.log("initialPhoto file_url:", initialPhoto?.file_url);
+
     if (!initialPhoto && id) {
-      getPhotoById(id).then((photo) => setPhoto(photo));
+      getPhotoById(id).then((photo) => {
+        if (photo) {
+          console.log("file_url:", photo.file_url);
+        }
+        setPhoto(photo);
+      });
     }
   }, [id, initialPhoto]);
 
@@ -144,7 +152,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
               style={{ width: `${100 * aspectRatio}%`, height: fixedHeight }}
             >
               <Image
-                src={photo.file_url}
+                src={photo.image_url}
                 alt="Uploaded photo"
                 layout="fill"
                 objectFit="contain"
@@ -161,19 +169,27 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params?.id;
+  try {
+    const id = context.params?.id;
 
-  if (!id || typeof id !== "string") {
-    return { notFound: true };
+    if (!id || typeof id !== "string") {
+      return { notFound: true };
+    }
+
+    const photo = await getPhotoById(id);
+
+    console.log("photo from getServerSideProps", photo);
+
+    return {
+      props: {
+        initialPhoto: photo,
+      },
+    };
+  } catch (error) {
+    console.error("getServerSideProps error", error);
+    // error handling here or return some default props
+    return { props: { initialPhoto: null } };
   }
-
-  const photo = await getPhotoById(id);
-
-  return {
-    props: {
-      initialPhoto: photo,
-    },
-  };
 };
 
 export default PhotoDetail;

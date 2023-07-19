@@ -12,6 +12,8 @@ import {
   getLike,
   getComments,
   getLikesCount,
+  getCommentsCount,
+  getAllCommentsCount,
 } from "../utils/api";
 
 const LoadableActionCable = dynamic(() => import("@rails/actioncable"), {
@@ -190,10 +192,12 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     const idToken = await firebase.auth().currentUser?.getIdToken();
     if (!idToken) return;
 
-    try {
-      console.log(`Fetching like for photoId: ${photoId}`);
-      const likeExists = await getLike(photoId, idToken);
+    const likeExists = likes[photoId] || false;
+    const updatedLikes = { ...likes, [photoId]: !likeExists };
 
+    setLikes(updatedLikes);
+
+    try {
       if (likeExists) {
         console.log(`Deleting like for photoId: ${photoId}`);
         await deleteLike(photoId, idToken);
@@ -208,19 +212,27 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
         ...prev,
         [photoId]: newCount,
       }));
-
-      setLikes((prevLikes) => {
-        const updatedLikes = {
-          ...prevLikes,
-          [photoId]: !likeExists,
-        };
-        return updatedLikes;
-      });
     } catch (error) {
       console.error(`Error updating like for photoId: ${photoId}`, error);
       alert("いいねの更新に失敗しました");
     }
   };
+
+  useEffect(() => {
+    (async function fetchLikes() {
+      if (!currentUserId || !photos) return;
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) return;
+
+      const likes: Record<number, boolean> = {};
+      for (const photo of photos) {
+        const likeExists = await getLike(photo.id, idToken);
+        likes[photo.id] = likeExists;
+      }
+
+      setLikes(likes);
+    })();
+  }, [photos, currentUserId]);
 
   // useEffect(() => {
   //   const fetchLikes = async () => {
@@ -272,6 +284,22 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     fetchInitialCounts();
   }, [photos]);
 
+  useEffect(() => {
+    (async function fetchLikeCounts() {
+      if (!photos) return;
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) return;
+
+      const newLikeCounts: Record<number, number> = {};
+      for (const photo of photos) {
+        const likeCount = await getLikesCount(photo.id, idToken);
+        newLikeCounts[photo.id] = likeCount;
+      }
+
+      setLikeCounts(newLikeCounts);
+    })();
+  }, [photos]);
+
   // useEffect(() => {
   //   // console.log(`Photos state: ${JSON.stringify(photos)}`);
   //   const fetchLikeCounts = async () => {
@@ -317,6 +345,19 @@ function PhotoList({ photos = [] }: PhotoListProps): JSX.Element {
     }, [ActionCable]);
     return <div>My Component</div>;
   }
+
+  useEffect(() => {
+    (async function fetchCommentCounts() {
+      if (!photos) return;
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) return;
+
+      const photoIds = photos.map((photo) => photo.id);
+      const newCommentCounts = await getAllCommentsCount(photoIds, idToken);
+
+      setCommentCounts(newCommentCounts);
+    })();
+  }, [photos, router.pathname]);
 
   return (
     <div className="flex flex-wrap justify-center items-start">

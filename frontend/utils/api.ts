@@ -161,6 +161,50 @@ export async function getUserComments(userId: string): Promise<Comment[]> {
   return await response.json();
 }
 
+export async function getCommentsCount(
+  photoId: number,
+  idToken: string
+): Promise<number> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to get comment counts");
+  }
+
+  const data = await res.json();
+  return data.comments_count;
+}
+
+export async function getAllCommentsCount(
+  photoIds: number[],
+  idToken: string
+): Promise<Record<number, number>> {
+  const res = await fetch(
+    `${
+      process.env.NEXT_PUBLIC_API_ENDPOINT
+    }/api/v1/photos/comments_count?photo_ids=${photoIds.join(",")}`,
+    {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to get comment counts");
+  }
+
+  const data = await res.json();
+  return data;
+}
+
 export const createLike = async (photoId: number, idToken: string) => {
   const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/photos/${photoId}/likes`;
   console.log(url);
