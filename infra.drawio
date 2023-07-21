@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-07-21T03:41:13.838Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="uQFzXfT77KgqdA89CF5l" version="21.6.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-21T05:22:28.017Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="TCpuu-sTEA4uFzQeIjaU" version="21.6.5" type="github">
   <diagram name="ページ1" id="yVRvfvMmdsN5VmzcEPOA">
     <mxGraphModel dx="1912" dy="1029" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -75,8 +75,8 @@
             <mxPoint x="435" y="67.84999999999997" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kt6_KNbTgv86gFpyJIy6-57" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://cdn.sisense.com/wp-content/uploads/Heroku-Postgres.png;" vertex="1" parent="kt6_KNbTgv86gFpyJIy6-25">
-          <mxGeometry x="496.1500000000001" y="28.349999999999966" width="80" height="80" as="geometry" />
+        <mxCell id="kt6_KNbTgv86gFpyJIy6-59" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://tomokazu-kozuma.com/wp-content/uploads/2017/08/postgresql-logo.png;" vertex="1" parent="kt6_KNbTgv86gFpyJIy6-25">
+          <mxGeometry x="476.88" y="23" width="223.75" height="102.7" as="geometry" />
         </mxCell>
         <mxCell id="kt6_KNbTgv86gFpyJIy6-43" value="" style="group" vertex="1" connectable="0" parent="1">
           <mxGeometry x="430" y="250" width="292.57" height="246.7" as="geometry" />
