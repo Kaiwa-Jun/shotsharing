@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "shotsharing-login",
+  "private_key_id": "7d03a6716bb3f1483465f6646785079765752b2b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQChCkBSJb9nPjLQ\n43awYKKTpO+ZvmU3XmYUrKk8+IpbSE/gdI5ejGv/5UJC2ylF+qlkxSYinvqC1AP6\nzsLM7IRvm345fcV6mDdRFxEuS5BZAVJ4rQCSaIeoZXUMEWmEcRacmZiVoNRUnw0p\nCFxS59F+p4c02YMUBPBHZYBx0o4nNJGKNze5NWZjGzidJ7FBIkMTXwAcnmjT5CHF\nLZYoAv0ydJiqob0ZhTAtk5vb14wKAUo/rEWOlKlwpBV850IQ2amkIofb7cCs/+tt\ncHV/V/cxvjSUAkuh3FSpBDkoEu8iy3ACiH50gs05hsIAPB9zixXB06Dng2Lv/wiM\nFVu+FdkTAgMBAAECggEADqtyZIlPwEXoNyMhYrvK04xIz0aKzdppjiSUXht97wbN\nT/MOLQq5o9vsh06Tme5Vk/ppmOnGhDhwDF7dW/GHtusBOpd8b8iB8X8ab48unQ0D\nyD5qOOwQv4ROf0TuycPLfYR4Y9j8vqCmgEBkuKCpctIr/OJ7kE1K3hYe9z9o96Ur\nQm0O4D6mUAwmzyVMgCU/tnrtehyBEMAjXHU77HKJB8Uz5NS0Fh/oB8A1CAhiptZF\npAnrPV/YOPt+ODjLSYzOvIFB6HgclpvKlZAPLqbmLg1X7lyn9gt0+KqP/tCu+jDe\nzW1KHBEevbA28ls85DWtPtJ2fWQUVEaL9liPTxC54QKBgQDRVg1ClqCPYB/tw4rH\npEqgmTnZH0jqo8ti8vNmUe1dLi7sxI0MFzJky0WnTrFL88/ONiiNKrDm+e+8BN7N\nKCJ9OJxXk5M8JM3geQHMxMvplKnqSMo0fyWsbvzPQqRhvkSgrVbUFDGikF3LecNu\nMVqSUdng8SRoKdognGVi36aoSwKBgQDE8CQR5TIwhHZo+5HzPeoUYYEBYZc41pha\nzAbifhKlUiJaFInNnj1C831ZI9vHidjJNbNvWeUQNujewWbm30cR8vFfopMTS4uc\n8x5EnSCOuwfa/Li4QKtg8/s1AfYmsqmWM9QecKUX2B3fWFLRW3cIhNQLRI/KTZxc\nyrOWxeelWQKBgE265TuXkNEMQW7ZEBwnjipqGwfbTQkLfwcj7WtN+pSCBJyYM0ON\nDYJN1HRWjREF3GDWzWH1uzBZGEK5kD2frIbQ0YTXYHGRvPygEiIF5S27rQg4tRSf\nLc8Ee00+kqlUrEj5dGdVhES31Iwsj3vISbhROlUDVaB0AfHgAOmg4FJXAoGBAJ3Z\nYP/a9jR/J62T3nLZsHJviIhD4YKUNn+oQuhtZqKNx6zuA1oEuFOeeFznafRwn4r+\n+PiKVBh/+nz5BXKNihhv4lnmI/52Mcw17Y/PZVYhwPUcVS6R3wuR40qkbNitoVIb\n7qwLW7hV5/Opho/5wNnaJV92r83WETsq2XFC5R3ZAoGBAMwjOSqrczbNpvcGCfWi\nB8Ao1BrLLflgA2RR2dv16rm2c4hajnWDpb8TSBx46k56px9cnE/teZ+N3yz3Z1dq\nf8aLgBMEM1g6Bt4yo4igZbrkhFzaU1LeDQ1WDY7xemPuHKIhHsykHXEhX66pkL6z\nf7J4aTdm6gY214sNv9PxFkty\n-----END PRIVATE KEY-----\n",
+  "client_email": "shotsharing-translate@shotsharing-login.iam.gserviceaccount.com",
+  "client_id": "111172616930512105006",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/shotsharing-translate%40shotsharing-login.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

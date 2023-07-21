@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  file_url: MyString
+  iso: 1
+  shutter_speed: 9.99
+  f_value: 9.99
+  camera_model: MyString
+  latitude: 9.99
+  longitude: 9.99
+  location_enabled: false
+  taken_at: 2023-03-22 21:19:26
+
+two:
+  user: two
+  file_url: MyString
+  iso: 1
+  shutter_speed: 9.99
+  f_value: 9.99
+  camera_model: MyString
+  latitude: 9.99
+  longitude: 9.99
+  location_enabled: false
+  taken_at: 2023-03-22 21:19:26
