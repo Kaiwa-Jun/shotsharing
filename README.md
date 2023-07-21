@@ -156,8 +156,8 @@ https://shotsharing.vercel.app/
 
 
 ## ER 図
+![er drawio](https://github.com/Kaiwa-Jun/shotsharing/assets/76391902/5f713993-cb12-49c7-b6e0-7df2da9dbe1d)
 
-![erd](https://user-images.githubusercontent.com/76391902/226364239-a1447071-0d75-49a2-a93b-530d719d6f54.png)
 
 
 ## 画面遷移図
