@@ -151,6 +151,10 @@ https://shotsharing.vercel.app/
 ---
 <br />
 
+## インフラ構成図
+![infra drawio](https://github.com/Kaiwa-Jun/shotsharing/assets/76391902/df1a6866-bbc6-4153-bbab-20323aa2c438)
+
+
 ## ER 図
 
 ![erd](https://user-images.githubusercontent.com/76391902/226364239-a1447071-0d75-49a2-a93b-530d719d6f54.png)
