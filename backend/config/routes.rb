@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'hello', to: 'hello#index'
       resources :users, only: [:create, :update] do
+        get 'recommended_photos', to: 'photos#recommended_photos'
         resources :likes, only: [:index], controller: 'likes'
         resources :comments, only: [:index], module: :users
       end
@@ -19,3 +20,5 @@ Rails.application.routes.draw do
     end
   end
 end
+
+# mount ActionCable.server => '/cable'

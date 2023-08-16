@@ -126,16 +126,29 @@ class Api::V1::PhotosController < ApplicationController
     end
   end
 
+  # def show
+  #   photo = Photo.find(params[:id])
+
+  #   render json: photo.as_json(
+  #     only: [:id, :iso, :shutter_speed, :f_value, :camera_model, :taken_at, :exposure_time, :likes_count, :comments_count],
+  #     include: :user,
+  #     methods: [:image_url]
+  #   )
+  # end
+
   def show
-    photo = Photo.find(params[:id])
+    photo = Photo.find_by(id: params[:id])
 
-    render json: photo.as_json(
-      only: [:id, :iso, :shutter_speed, :f_value, :camera_model, :taken_at, :exposure_time, :likes_count, :comments_count],
-      include: :user,
-      methods: [:image_url]
-    )
+    if photo
+      render json: photo.as_json(
+        only: [:id, :iso, :shutter_speed, :f_value, :camera_model, :taken_at, :exposure_time, :likes_count, :comments_count],
+        include: :user,
+        methods: [:image_url]
+      )
+    else
+      render json: { message: 'Photo not found' }, status: :not_found
+    end
   end
-
 
   def update
     photo = Photo.find(params[:id])
@@ -160,6 +173,24 @@ class Api::V1::PhotosController < ApplicationController
     counts = Comment.where(photo_id: photo_ids).group(:photo_id).count
     render json: counts
   end
+
+  def recommended_photos
+    user = User.find_by(firebase_uid: params[:id]) # パラメータからユーザーを取得
+
+    # ユーザーが最もいいねをつけているカテゴリを見つける
+    favorite_category_id = user.likes.joins(photo: :categories).group("categories.id").order("count_all DESC").count.keys.first
+
+    # そのカテゴリの写真を取得
+    recommended_photos = Photo.joins(:categories).where(categories: { id: favorite_category_id })
+
+    # レスポンスとしてJSONを返す
+    render json: recommended_photos.to_json(
+      only: [:id, :iso, :shutter_speed, :f_value, :camera_model, :taken_at, :exposure_time, :likes_count, :comments_count],
+      include: :user,
+      methods: [:image_url]
+    )
+  end
+
 
   private
 
