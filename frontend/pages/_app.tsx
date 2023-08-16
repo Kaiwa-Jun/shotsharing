@@ -11,7 +11,7 @@ import { UserProvider } from "../contexts/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [ws, setWs] = useState<WebSocket | null>(null);
-  const [likesCount, setLikesCount] = useState<number>(0);
+  const [likesCount, setLikesCount] = useState<number>(0); // New state for likes count
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         const response = JSON.parse(event.data);
         const message = response.message;
         if (message && message.likes_count) {
-          setLikesCount(message.likes_count);
+          setLikesCount(message.likes_count); // Update likes count when receiving a message
         }
       };
 
