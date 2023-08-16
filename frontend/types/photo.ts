@@ -1,4 +1,5 @@
 import { User } from "./user";
+import { Category } from "./category";
 
 export interface Photo {
   id: number;
@@ -16,11 +17,13 @@ export interface Photo {
   height?: number;
   width?: number;
   commentCount?: number;
-  categories: any[];
+  categories: Category[];
   location_enabled: boolean;
   latitude: number | null;
   longitude: number | null;
   exposure_time: number;
   likes_count: number;
   image_url: string;
+  category: Category; // categoryプロパティも追加します。
+  japanese_name: string; // japanese_nameプロパティを追加
 }

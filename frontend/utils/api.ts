@@ -403,3 +403,25 @@ export async function updateBackendUser(
 
   return response.json();
 }
+
+export async function getPhotosByJapaneseName(
+  japanese_name: string
+): Promise<Photo[]> {
+  const url = `${
+    process.env.NEXT_PUBLIC_API_ENDPOINT
+  }/api/v1/photos?japanese_name=${encodeURIComponent(japanese_name)}`;
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      console.error("Failed to fetch photos by japanese name");
+      return [];
+    }
+
+    const data = await response.json();
+    return data.photos;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}

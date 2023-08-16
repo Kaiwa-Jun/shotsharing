@@ -11,11 +11,13 @@ import { UserProvider } from "../contexts/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [ws, setWs] = useState<WebSocket | null>(null);
-  const [likesCount, setLikesCount] = useState<number>(0); // New state for likes count
+  const [likesCount, setLikesCount] = useState<number>(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setWs(new WebSocket("ws://localhost:3000/cable"));
+      const wsUrl =
+        process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:3000/cable";
+      setWs(new WebSocket(wsUrl));
     }
   }, []);
 
@@ -37,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         const response = JSON.parse(event.data);
         const message = response.message;
         if (message && message.likes_count) {
-          setLikesCount(message.likes_count); // Update likes count when receiving a message
+          setLikesCount(message.likes_count);
         }
       };
 

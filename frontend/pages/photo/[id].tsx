@@ -1,14 +1,16 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getPhotoById } from "../../utils/api";
+import { getPhotoById, getPhotosByJapaneseName } from "../../utils/api";
 import { Photo } from "../../types/photo";
 import HeroSection from "../../components/organisms/HeroSection";
 import Image from "next/image";
 import { NextSeo } from "next-seo";
+import RecommendPhotos from "@/components/organisms/RecommendPhotos";
 
 interface PhotoDetailProps {
   initialPhoto: Photo | null;
+  initialRecommendedPhotos: Photo[];
 }
 
 const toFraction = (decimal: number) => {
@@ -27,8 +29,58 @@ const toFraction = (decimal: number) => {
   return `${numerator}/${denominator}`;
 };
 
-const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const id = context.params?.id;
+
+    if (!id || typeof id !== "string") {
+      return { notFound: true };
+    }
+
+    const photo = await getPhotoById(id);
+
+    if (!photo) {
+      return { notFound: true };
+    }
+
+    let recommendedPhotos: Photo[] = [];
+
+    try {
+      recommendedPhotos = await getPhotosByJapaneseName(photo.japanese_name);
+      console.log(
+        "recommendedPhotos from getServerSideProps",
+        recommendedPhotos
+      );
+    } catch (error) {
+      console.error("Failed to get recommended photos:", error);
+    }
+
+    if (!recommendedPhotos) {
+      recommendedPhotos = []; // undefinedだった場合に空配列を代入
+    }
+
+    console.log("photo from getServerSideProps", photo);
+
+    return {
+      props: {
+        initialPhoto: photo,
+        initialRecommendedPhotos: recommendedPhotos,
+      },
+    };
+  } catch (error) {
+    console.error("getServerSideProps error", error);
+    return { props: { initialPhoto: null, initialRecommendedPhotos: [] } };
+  }
+};
+
+const PhotoDetail: React.FC<PhotoDetailProps> = ({
+  initialPhoto,
+  initialRecommendedPhotos,
+}) => {
   const [photo, setPhoto] = useState<Photo | null>(initialPhoto);
+  const [recommendedPhotos, setRecommendedPhotos] = useState<Photo[]>(
+    initialRecommendedPhotos
+  );
   const [imageWidth, setImageWidth] = useState<number>(0);
   const fixedHeight = 300; // 画像の高さを固定
   const router = useRouter();
@@ -68,6 +120,10 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
       setAvatarUrl(photo.user.avatar_url);
     }
   }, [photo]);
+
+  useEffect(() => {
+    console.log("initialRecommendedPhotos:", initialRecommendedPhotos);
+  }, [initialRecommendedPhotos]);
 
   if (!photo) {
     return <div>Loading...</div>;
@@ -158,38 +214,12 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ initialPhoto }) => {
                 objectFit="contain"
               />
             </div>
-            {/* <p className="            text-gray-500">
-              {new Date(photo.created_at).toLocaleString()}
-            </p> */}
           </div>
         </div>
       </div>
+      <RecommendPhotos photos={recommendedPhotos} />
     </>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const id = context.params?.id;
-
-    if (!id || typeof id !== "string") {
-      return { notFound: true };
-    }
-
-    const photo = await getPhotoById(id);
-
-    console.log("photo from getServerSideProps", photo);
-
-    return {
-      props: {
-        initialPhoto: photo,
-      },
-    };
-  } catch (error) {
-    console.error("getServerSideProps error", error);
-    // error handling here or return some default props
-    return { props: { initialPhoto: null } };
-  }
 };
 
 export default PhotoDetail;
