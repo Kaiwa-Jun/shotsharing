@@ -15,8 +15,13 @@ class Photo < ApplicationRecord
     self.image.service_url.sub(/\?.*/, "")
   end
 
+  # def image_url
+  #   Rails.application.routes.url_helpers.rails_blob_url(image) if image.attached?
+  # end
+
   def image_url
-    Rails.application.routes.url_helpers.rails_blob_url(image) if image.attached?
+    host = Rails.env.production? ? 'https://shotsharing-backend.herokuapp.com' : 'http://localhost:3002'
+    Rails.application.routes.url_helpers.rails_blob_url(image, host: host) if image.attached?
   end
 
 end
