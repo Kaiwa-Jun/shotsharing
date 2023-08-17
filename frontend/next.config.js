@@ -7,6 +7,7 @@ module.exports = {
       "localhost",
       "fastly.picsum.photos",
       "firebasestorage.googleapis.com",
+      "shotsharing-backend.herokuapp.com",
     ],
   },
   async rewrites() {
