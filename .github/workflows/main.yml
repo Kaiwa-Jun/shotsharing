@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build Docker image
         working-directory: ./backend
-        run: docker build . -t shotsharing-backend
+        run: docker buildx build . --platform linux/amd64 -t kaiwajun/shotsharing-backend:latest
       - uses: akhileshns/heroku-deploy@v3.12.14
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
