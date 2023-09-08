@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Change to backend directory
-        run: cd backend
+      - name: Build Docker image
+        working-directory: ./backend
+        run: docker build . -t shotsharing-backend
       - uses: akhileshns/heroku-deploy@v3.12.14 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "shotsharing-backend" #Must be unique in Heroku
+          heroku_app_name: "shotsharing-backend" # Must be unique in Heroku
           heroku_email: "kj.11235813213455@gmail.com"
           usedocker: true
+          dockerimagename: "shotsharing-backend"
