@@ -19,4 +19,3 @@ jobs:
           heroku_app_name: "shotsharing-backend" # Must be unique in Heroku
           heroku_email: "kj.11235813213455@gmail.com"
           usedocker: true
-          dockerimagename: "shotsharing-backend"
