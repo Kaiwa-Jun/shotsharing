@@ -1,5 +1,4 @@
-name: Deploy
-
+name: Deploy to heroku
 on:
   push:
     branches:
@@ -9,13 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build Docker image
-        working-directory: ./backend
-        run: docker build . --platform linux/amd64 -t kaiwajun/shotsharing-backend:latest
-      - uses: akhileshns/heroku-deploy@v3.12.14
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build, Push and Release a Docker container to Heroku
+        uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          email: kj.11235813213455@gmail.com
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "shotsharing-backend"
-          heroku_email: "kj.11235813213455@gmail.com"
-          usedocker: true
+          dockerfile_directory: ./backend
+          dockerfile_name: Dockerfile
+          docker_options: "--platform linux/amd64 --no-cache"
+          process_type: web
