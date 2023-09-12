@@ -12,7 +12,7 @@ fi
 # Run migrations if necessary.
 if [ "$RAILS_ENV" = "production" ]; then
   echo "Running migrations..."
-  bundle exec rails db:migrate
+  # bundle exec rails db:migrate
 else
   echo "Skipping migrations in non-production environment..."
 fi
