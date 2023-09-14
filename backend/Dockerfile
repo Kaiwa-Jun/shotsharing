@@ -16,7 +16,7 @@ RUN mkdir /backend
 WORKDIR /backend
 COPY Gemfile /backend/Gemfile
 COPY Gemfile.lock /backend/Gemfile.lock
-RUN bundle install
+RUN bundle install --without development test
 COPY . /backend
 
 # Add a script to be executed every time the container starts.
