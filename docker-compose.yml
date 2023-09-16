@@ -17,13 +17,14 @@ services:
       - db
       - redis
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/backend_development
+      - DATABASE_URL=postgres://gwyawlahgipgqs:f911f488e807b3a9c361fdf30489ec10c724ec67d9a9c03a4049f35b24f56a03@ec2-44-215-22-37.compute-1.amazonaws.com:5432/d5h4v6o3pvjtvj # この行を追加
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=backend_development
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=rediss://:p907c8d6c62b76ce337bd0f148f9b531b8ab7521db916316bcb825b0b42879d8e@ec2-54-225-225-100.compute-1.amazonaws.com:9800
+      - RAILS_ENV=production
       - GOOGLE_APPLICATION_CREDENTIALS=config/shotsharing-login-74a4503f9f0d.json
       - GOOGLE_CLOUD_PROJECT=shotsharing-login
       - GOOGLE_CLOUD_KEYFILE_JSON=config/shotsharing-login-74a4503f9f0d.json
